@@ -19,33 +19,13 @@ declare global {
   }
 }
 
-import { useEffect, useState, useRef, useCallback } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { BarChart3, Clock, Upload, Copy, RefreshCw } from "lucide-react"
-
-// Type definitions for Tesseract
-interface TesseractProgressInfo {
-  status: string;
-  progress: number;
-}
-
-interface TesseractResult {
-  data: {
-    text: string
-  }
-}
-
-interface TesseractWorker {
-  load: () => Promise<void>
-  loadLanguage: (lang: string) => Promise<void>
-  initialize: (lang: string) => Promise<void>
-  recognize: (image: File | string) => Promise<TesseractResult>
-  terminate: () => Promise<void>
-}
 
 interface TextStats {
   wordCount: number
@@ -54,9 +34,6 @@ interface TextStats {
   readingTime: string
   paragraphCount: number
 }
-
-// Maximum time (in ms) to wait for OCR processing before timing out
-const OCR_TIMEOUT_MS = 60000; // 60 seconds timeout
 
 export function WordCounter() {
   // State hooks
@@ -71,43 +48,11 @@ export function WordCounter() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [ocrText, setOcrText] = useState("")
   const [isMounted, setIsMounted] = useState(false)
-  const [tesseractLoaded, setTesseractLoaded] = useState(false)
-  const [processingProgress, setProcessingProgress] = useState(0)
-
-  // Refs hooks
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const workerRef = useRef<TesseractWorker | null>(null)
-
-  // Clean up worker and timer
-  const cleanupWorker = useCallback(async () => {
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-      timeoutRef.current = null
-    }
-
-    // Terminate worker if it exists
-    if (workerRef.current) {
-      try {
-        await workerRef.current.terminate()
-        console.log("Worker terminated during cleanup")
-      } catch (e) {
-        console.warn("Error terminating worker during cleanup:", e)
-      }
-      workerRef.current = null
-    }
-  }, []);
 
   // Set mounted state to ensure we're only running client-side code
   useEffect(() => {
     setIsMounted(true)
-    setTesseractLoaded(true)
-
-    // Cleanup function to ensure any worker is terminated
-    return () => {
-      cleanupWorker()
-    }
-  }, [cleanupWorker])
+  }, [])
 
   // Calculate stats when text changes
   useEffect(() => {
@@ -123,50 +68,50 @@ export function WordCounter() {
     }
 
     // Get words - split by whitespace
-    const words = text.trim().split(/\s+/).length
+    const words = text.trim().split(/\s+/).filter(word => word !== '').length
     const chars = text.length
     const paragraphs = text.trim().split(/\n\s*\n/).filter(Boolean).length
 
     // Improved sentence counting that ignores common abbreviations
-    let processedText = text
+    // Expanded list of titles (including academic, professional, military, etc.)
+    const titles = [
+      "dr", "mr", "mrs", "ms", "prof", "rev", "fr", "sr", "jr", "phd", "md", "jd",
+      "esq", "rn", "cpa", "mba", "llb", "dmd", "dds", "dvm", "do", "eng",
+      "capt", "sgt", "lt", "col", "gen", "maj", "cmdr", "adm", "gov", "pres",
+      "rep", "sen", "st", "ave", "blvd", "rd", "ln", "ct", "etc", "viz" , "hon"
+    ];
 
-    // Replace common titles with periods to avoid counting them as sentence breaks
-    const commonAbbreviations = [
-      /(\bDr\.)\s/g,
-      /(\bMr\.)\s/g,
-      /(\bMrs\.)\s/g,
-      /(\bMs\.)\s/g,
-      /(\bProf\.)\s/g,
-      /(\bRev\.)\s/g,
-      /(\bSr\.)\s/g,
-      /(\bJr\.)\s/g,
-      /(\bSt\.)\s/g,
-      /(\be\.g\.)\s/g,
-      /(\bi\.e\.)\s/g,
-      /(\betc\.)\s/g,
-      /(\bvs\.)\s/g,
-      /(\ba\.m\.)\s/g,
-      /(\bp\.m\.)\s/g,
-      /(\bU\.S\.)\s/g,
-      /(\bU\.K\.)\s/g,
-      /(\bB\.A\.)\s/g,
-      /(\bM\.A\.)\s/g,
-      /(\bPh\.D\.)\s/g,
-      /(\bInc\.)\s/g,
-      /(\bLtd\.)\s/g,
-    ]
+    // 1. Clean up the text (remove extra spaces, etc.)
+    const cleanText = text.trim().replace(/\s+/g, ' ');
 
-    // Replace periods in abbreviations with temporary markers
-    for (const regex of commonAbbreviations) {
-      processedText = processedText.replace(regex, (match) =>
-        match.replace('.', '_')
-      )
+    // 2. Split into potential sentences.
+    const potentialSentences = cleanText.split(/([.!?]+)/);
+
+    const sentences = [];
+    let currentSentence = "";
+
+    for (let i = 0; i < potentialSentences.length; i++) {
+      currentSentence += potentialSentences[i];
+
+      // Check if we've reached the end of a sentence
+      if (i % 2 !== 0) { // Odd indices are the punctuation marks
+        const lastWord = currentSentence.trim().split(" ").pop();
+        if (lastWord) {
+          const isTitle = titles.some(title =>
+            lastWord.toLowerCase().replace(/[^a-z]/g, '').startsWith(title)
+          );
+          if (!isTitle) {
+            sentences.push(currentSentence.trim());
+            currentSentence = "";  //reset for the next sentence
+          } //else continue adding to current sentence
+        }
+      }
     }
 
-    // Count sentences (split by .!? but ignore periods in abbreviations)
-    const sentences = processedText.split(/[.!?]+/)
-      .filter(s => s.trim().length > 0)
-      .length
+    // Add any remaining text if there was no punctuation mark
+    if (currentSentence.trim() !== "") {
+      sentences.push(currentSentence.trim());
+    }
 
     // Calculate reading time (average reading speed: 200 words per minute)
     const readingTimeMinutes = Math.max(1, Math.ceil(words / 200))
@@ -174,7 +119,7 @@ export function WordCounter() {
 
     setStats({
       wordCount: words,
-      sentenceCount: sentences,
+      sentenceCount: sentences.length,
       charCount: chars,
       readingTime,
       paragraphCount: paragraphs,
@@ -186,7 +131,7 @@ export function WordCounter() {
     return null;
   }
 
-  // Handle file upload with OCR
+  // Handle file upload with OCR - using a simpler approach similar to the original script
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -207,66 +152,41 @@ export function WordCounter() {
     }
 
     setIsProcessing(true)
-    setProcessingProgress(0)
-
-    // Create an object URL for the image
-    const imageUrl = URL.createObjectURL(file)
-
-    // Set up timeout to prevent infinite processing
-    timeoutRef.current = setTimeout(() => {
-      cleanupWorker()
-      setIsProcessing(false)
-      toast.error("OCR processing timed out. Try a clearer image or reload the page.")
-      URL.revokeObjectURL(imageUrl)
-    }, OCR_TIMEOUT_MS)
 
     try {
       console.log("Starting OCR process with image:", file.name)
 
-      // Import the library
+      // Import the library using a simpler approach
       const { createWorker } = await import('tesseract.js')
 
-      // Safer approach to logger function that won't have cloning issues
-      // Create worker with base configuration
-      workerRef.current = await createWorker({
-        workerPath: '/tesseract/worker.min.js',
-        corePath: '/tesseract/tesseract-core.wasm.js',
-        langPath: 'https://tessdata.projectnaptha.com/4.0.0',
-        logger: m => {
-          console.log('tesseract log:', m);
-          if (m.status === 'recognizing text') {
-            setProcessingProgress(Math.floor(m.progress * 100));
-          }
-        }
-      });
+      // Simple worker creation - similar to the original script approach
+      const worker = await createWorker()
 
       try {
-        // Load and initialize the language
-        await workerRef.current.load();
-        await workerRef.current.loadLanguage('eng');
-        await workerRef.current.initialize('eng');
-
-        // Process the image
-        const result = await workerRef.current.recognize(imageUrl);
+        // Using a single recognize call
+        const result = await worker.recognize(file)
 
         // Set the recognized text
-        const extractedText = result.data.text;
-        setText(extractedText);
-        setOcrText(extractedText);
+        const extractedText = result.data.text
+        setText(extractedText)
+        setOcrText(extractedText)
 
-        toast.success("Text extracted successfully!");
-      } catch (initError) {
-        console.error("OCR initialization error:", initError);
-        throw new Error(`Failed to process image: ${initError instanceof Error ? initError.message : 'Unknown error'}`);
+        toast.success("Text extracted successfully!")
+
+        // Terminate worker immediately after use
+        await worker.terminate()
+      } catch (error) {
+        console.error("OCR error:", error)
+        toast.error(`OCR failed: ${error instanceof Error ? error.message : 'Unknown error'}. Try a clearer image.`)
+
+        // Make sure to terminate the worker even if there's an error
+        await worker.terminate()
       }
-    } catch (ocrError) {
-      console.error("OCR processing error:", ocrError)
-      toast.error(`OCR failed: ${ocrError instanceof Error ? ocrError.message : 'Unknown error'}. Try a clearer image.`)
+    } catch (error) {
+      console.error("Worker creation error:", error)
+      toast.error("Failed to initialize OCR system. Please try again.")
     } finally {
-      // Always clean up
-      await cleanupWorker()
       setIsProcessing(false)
-      URL.revokeObjectURL(imageUrl)
     }
   }
 
@@ -306,15 +226,7 @@ export function WordCounter() {
                 <div className="absolute inset-0 flex items-center justify-center bg-background/80">
                   <div className="flex flex-col items-center space-y-2">
                     <RefreshCw className="h-10 w-10 animate-spin text-primary" />
-                    <p>Processing image... {processingProgress}%</p>
-                    {processingProgress > 0 && processingProgress < 100 && (
-                      <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary"
-                          style={{ width: `${processingProgress}%` }}
-                        />
-                      </div>
-                    )}
+                    <p>Processing image...</p>
                   </div>
                 </div>
               )}
