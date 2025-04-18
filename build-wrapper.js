@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 // Simple build wrapper that sets environment variables for Next.js build
 const { spawn } = require('child_process');
