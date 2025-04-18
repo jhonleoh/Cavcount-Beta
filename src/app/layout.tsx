@@ -41,7 +41,7 @@ export default function RootLayout({
         />
         <meta
           httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://unpkg.com/ https://cdn.jsdelivr.net/; connect-src 'self' https://unpkg.com/ https://cdn.jsdelivr.net/ https://tessdata.projectnaptha.com/; worker-src 'self' blob: https://unpkg.com/ https://cdn.jsdelivr.net/; img-src 'self' data: blob: https://*;"
+          content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://*; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*;"
         />
       </head>
       <body className="antialiased">

@@ -1,11 +1,17 @@
 [build]
-  command = "bun run build"
+  command = "bash netlify-build.sh"
   publish = ".next"
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "false"
   NODE_VERSION = "18"
   NEXT_TELEMETRY_DISABLED = "1"
+  NEXT_STANDALONE = "true"
+  NEXT_SKIP_LINT = "true"
+  NEXT_TYPESCRIPT_CHECK = "false"
+  NEXT_DISABLE_TYPESCRIPT_CHECK = "true"
+  NEXT_IGNORE_TYPESCRIPT_ERRORS = "true"
+  NODE_OPTIONS = "--max-old-space-size=4096"
 
 [functions]
   node_bundler = "esbuild"

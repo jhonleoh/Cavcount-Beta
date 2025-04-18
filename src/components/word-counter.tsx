@@ -1,5 +1,24 @@
 "use client"
 
+// Add type definitions for global Tesseract config
+declare global {
+  interface Window {
+    TESSERACT_CONFIG?: {
+      workerPath: string;
+      corePath: string;
+      langPath: string;
+    };
+    TESSERACT_DEBUG_INFO?: {
+      loadedAt: string;
+      environment: {
+        userAgent: string;
+        platform: string;
+        language: string;
+      };
+    };
+  }
+}
+
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,7 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { BarChart3, Clock, Upload, Copy, RefreshCw } from "lucide-react"
 
-// Type definition for worker factory function
+// Type definitions for Tesseract
 type TesseractWorkerOptions = {
   logger?: (arg: { status: string, progress: number } | unknown) => void;
   workerPath?: string;
@@ -17,7 +36,6 @@ type TesseractWorkerOptions = {
 };
 type CreateWorkerFn = (options?: TesseractWorkerOptions) => Promise<TesseractWorker>;
 
-// Type definition for Tesseract to avoid errors
 interface TesseractResult {
   data: {
     text: string
@@ -31,17 +49,6 @@ interface TesseractWorker {
   recognize: (image: File | string) => Promise<TesseractResult>
   terminate: () => Promise<void>
 }
-
-// Mock implementation for static builds or when Tesseract fails to load
-const createMockWorker = async (): Promise<TesseractWorker> => {
-  return {
-    load: async () => {},
-    loadLanguage: async () => {},
-    initialize: async () => {},
-    recognize: async () => ({ data: { text: "OCR is not available in this static build. Please use the full application for image text extraction." } }),
-    terminate: async () => {},
-  };
-};
 
 interface TextStats {
   wordCount: number
@@ -63,10 +70,35 @@ export function WordCounter() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [ocrText, setOcrText] = useState("")
   const [isMounted, setIsMounted] = useState(false)
+  const [tesseractLoaded, setTesseractLoaded] = useState(false)
 
   // Set mounted state to ensure we're only running client-side code
   useEffect(() => {
     setIsMounted(true)
+
+    // Attempt to preload Tesseract on initial render
+    const preloadTesseract = async () => {
+      try {
+        if (typeof window !== 'undefined') {
+          // Check if window.TESSERACT_CONFIG exists (from the config script)
+          const config = window.TESSERACT_CONFIG || {
+            workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/worker.min.js',
+            corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0/dist/tesseract-core.wasm.js',
+            langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+          };
+
+          // Import inside the try/catch for safer error handling
+          const { createWorker } = await import('tesseract.js');
+          setTesseractLoaded(true);
+          console.log('Tesseract module loaded successfully');
+        }
+      } catch (error) {
+        console.error('Failed to preload Tesseract (non-critical):', error);
+        // Continue anyway - we'll try again when needed
+      }
+    };
+
+    preloadTesseract();
   }, [])
 
   // Don't render anything during SSR to prevent hydration mismatch
@@ -162,7 +194,6 @@ export function WordCounter() {
     try {
       const imageUrl = URL.createObjectURL(file)
 
-      // Always import Tesseract.js directly
       console.log("Importing tesseract.js...");
       const tesseractModule = await import('tesseract.js')
       const createWorker = tesseractModule.createWorker
@@ -170,15 +201,20 @@ export function WordCounter() {
 
       // Create worker with CDN paths for maximum compatibility
       console.log("Creating Tesseract worker...");
-      const worker = await createWorker({
-        logger: (m) => console.log("Tesseract worker progress:", m),
+      // Use window.TESSERACT_CONFIG if available, otherwise use defaults
+      const config = window.TESSERACT_CONFIG || {
         workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/worker.min.js',
         corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0/dist/tesseract-core.wasm.js',
         langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+      };
+
+      const worker = await createWorker({
+        logger: (m) => console.log("Tesseract worker progress:", m),
+        ...config
       });
       console.log("Tesseract worker created successfully");
 
-      // Initialize the worker and recognize text - with more detailed logs
+      // Initialize the worker and recognize text
       console.log("Loading Tesseract worker...");
       await worker.load()
       console.log("Loading English language data...");

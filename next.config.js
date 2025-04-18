@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configure for dynamic deployment (no static export)
+  // Configure for deployment on Netlify
   reactStrictMode: true,
+
+  // For static exports, uncomment the following line:
+  output: 'export',
+
+  // For static exports, we need to disable image optimization
   images: {
+    unoptimized: true,
     domains: [
       "source.unsplash.com",
       "images.unsplash.com",
@@ -31,15 +37,21 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-    unoptimized: true,
   },
+
+  // Disable type checking completely for builds
   typescript: {
-    ignoreBuildErrors: true,
+    // Skip type checking entirely
+    tsconfigPath: false
   },
+
+  // Disable linting completely for builds
   eslint: {
-    ignoreDuringBuilds: true,
+    // Skip linting entirely
+    dirs: []
   },
-  // Add webpack configuration to handle worker files
+
+  // Improve webpack configuration for Tesseract.js
   webpack: (config, { isServer, dev }) => {
     // This is needed for Tesseract.js to work properly
     config.resolve.fallback = {
@@ -48,6 +60,11 @@ const nextConfig = {
       path: false,
       crypto: false,
     };
+
+    // Avoid server-side Tesseract usage
+    if (isServer) {
+      config.externals.push('tesseract.js');
+    }
 
     return config;
   },
