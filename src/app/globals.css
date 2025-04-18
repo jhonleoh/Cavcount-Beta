@@ -67,3 +67,65 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile-first responsive utilities */
+@layer utilities {
+  .xs\:inline {
+    @media (min-width: 480px) {
+      display: inline;
+    }
+  }
+
+  /* Custom responsive container padding */
+  .container {
+    @apply px-4 md:px-6 lg:px-8;
+  }
+}
+
+/* Improved mobile responsiveness */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.75rem !important;
+    line-height: 2rem !important;
+  }
+
+  .text-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reading-time {
+    max-width: 100%;
+    font-size: 0.875rem;
+  }
+}
+
+/* Ensure elements don't overflow on small screens */
+textarea, pre, code, .card {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* Better focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Add smooth transitions */
+.hover-target,
+button,
+a {
+  transition: all 0.2s ease;
+}
+
+/* Improve form elements on mobile */
+input, textarea, button {
+  font-size: 16px !important; /* Prevents iOS zoom on focus */
+}
+
+@media (max-width: 480px) {
+  .flex-wrap button {
+    flex: 1 0 auto;
+    min-width: 40%;
+  }
+}

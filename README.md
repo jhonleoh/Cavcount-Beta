@@ -37,7 +37,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 # CavCount
 
-Word & Sentence Counter with OCR capabilities.
+Modern Word & Sentence Counter with OCR capabilities.
 
 ## Deployment Instructions
 
