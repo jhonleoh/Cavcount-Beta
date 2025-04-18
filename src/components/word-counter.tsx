@@ -1,0 +1,414 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner"
+import { BarChart3, Clock, Upload, Copy, RefreshCw } from "lucide-react"
+
+// Type definition for worker factory function
+type CreateWorkerFn = (options?: any) => Promise<TesseractWorker>;
+
+// Type definition for Tesseract to avoid errors
+interface TesseractResult {
+  data: {
+    text: string
+  }
+}
+
+interface TesseractWorker {
+  load: () => Promise<void>
+  loadLanguage: (lang: string) => Promise<void>
+  initialize: (lang: string) => Promise<void>
+  recognize: (image: File | string) => Promise<TesseractResult>
+  terminate: () => Promise<void>
+}
+
+// Mock implementation for static builds or when Tesseract fails to load
+const createMockWorker = async (): Promise<TesseractWorker> => {
+  return {
+    load: async () => {},
+    loadLanguage: async () => {},
+    initialize: async () => {},
+    recognize: async () => ({ data: { text: "OCR is not available in this static build. Please use the full application for image text extraction." } }),
+    terminate: async () => {},
+  };
+};
+
+interface TextStats {
+  wordCount: number
+  sentenceCount: number
+  charCount: number
+  readingTime: string
+  paragraphCount: number
+}
+
+export function WordCounter() {
+  const [text, setText] = useState("")
+  const [stats, setStats] = useState<TextStats>({
+    wordCount: 0,
+    sentenceCount: 0,
+    charCount: 0,
+    readingTime: "0 min",
+    paragraphCount: 0,
+  })
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [ocrText, setOcrText] = useState("")
+  const [isOcrSupported, setIsOcrSupported] = useState(true)
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Set mounted state to ensure we're only running client-side code
+  useEffect(() => {
+    setIsMounted(true)
+
+    // Check if we're in a static build by testing if Tesseract can be loaded
+    const checkOcrSupport = async () => {
+      try {
+        // Only import if we're in the browser
+        if (typeof window !== 'undefined') {
+          // Try to dynamically import tesseract
+          await import('tesseract.js')
+          setIsOcrSupported(true)
+        }
+      } catch (err) {
+        console.error("Tesseract.js is not available in this build:", err)
+        setIsOcrSupported(false)
+      }
+    }
+
+    checkOcrSupport()
+  }, [])
+
+  // Calculate stats when text changes
+  useEffect(() => {
+    if (!text.trim()) {
+      setStats({
+        wordCount: 0,
+        sentenceCount: 0,
+        charCount: 0,
+        readingTime: "0 min",
+        paragraphCount: 0,
+      })
+      return
+    }
+
+    // Get words - split by whitespace
+    const words = text.trim().split(/\s+/).length
+    const chars = text.length
+    const paragraphs = text.trim().split(/\n\s*\n/).filter(Boolean).length
+
+    // Improved sentence counting that ignores common abbreviations
+    let processedText = text
+
+    // Replace common titles with periods to avoid counting them as sentence breaks
+    const commonAbbreviations = [
+      /(\bDr\.)\s/g,
+      /(\bMr\.)\s/g,
+      /(\bMrs\.)\s/g,
+      /(\bMs\.)\s/g,
+      /(\bProf\.)\s/g,
+      /(\bRev\.)\s/g,
+      /(\bSr\.)\s/g,
+      /(\bJr\.)\s/g,
+      /(\bSt\.)\s/g,
+      /(\be\.g\.)\s/g,
+      /(\bi\.e\.)\s/g,
+      /(\betc\.)\s/g,
+      /(\bvs\.)\s/g,
+      /(\ba\.m\.)\s/g,
+      /(\bp\.m\.)\s/g,
+      /(\bU\.S\.)\s/g,
+      /(\bU\.K\.)\s/g,
+      /(\bB\.A\.)\s/g,
+      /(\bM\.A\.)\s/g,
+      /(\bPh\.D\.)\s/g,
+      /(\bInc\.)\s/g,
+      /(\bLtd\.)\s/g,
+    ]
+
+    // Replace periods in abbreviations with temporary markers
+    for (const regex of commonAbbreviations) {
+      processedText = processedText.replace(regex, (match) =>
+        match.replace('.', '_')
+      )
+    }
+
+    // Count sentences (split by .!? but ignore periods in abbreviations)
+    const sentences = processedText.split(/[.!?]+/)
+      .filter(s => s.trim().length > 0)
+      .length
+
+    // Calculate reading time (average reading speed: 200 words per minute)
+    const readingTimeMinutes = Math.max(1, Math.ceil(words / 200))
+    const readingTime = `${readingTimeMinutes} min${readingTimeMinutes !== 1 ? "s" : ""}`
+
+    setStats({
+      wordCount: words,
+      sentenceCount: sentences,
+      charCount: chars,
+      readingTime,
+      paragraphCount: paragraphs,
+    })
+  }, [text])
+
+  // Handle file upload with OCR - with better static build handling
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Check if the file is an image
+    if (!file.type.match('image.*')) {
+      toast.error("Please upload an image file")
+      return
+    }
+
+    setIsProcessing(true)
+
+    try {
+      // Create a URL from the file for browser compatibility
+      const imageUrl = URL.createObjectURL(file)
+
+      let createWorker: CreateWorkerFn = createMockWorker;
+
+      try {
+        // Attempt to dynamically import tesseract
+        const tesseractModule = await import('tesseract.js')
+        createWorker = tesseractModule.createWorker
+      } catch (err) {
+        console.error("Could not load Tesseract.js:", err)
+        // Use mock worker if Tesseract.js fails to load
+        createWorker = createMockWorker
+        setIsOcrSupported(false)
+      }
+
+      try {
+        // Create worker (real or mock)
+        const worker = await createWorker({
+          logger: (m) => console.log(m),
+          workerPath: './worker.min.js',
+          corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0',
+          langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+        });
+
+        // Initialize the worker and recognize text
+        await worker.load()
+        await worker.loadLanguage('eng')
+        await worker.initialize('eng')
+
+        // Process the image
+        const result = await worker.recognize(imageUrl)
+
+        // Set the recognized text
+        const extractedText = result.data.text
+        setText(extractedText)
+        setOcrText(extractedText)
+
+        // Clean up
+        await worker.terminate()
+        URL.revokeObjectURL(imageUrl)
+
+        if (isOcrSupported) {
+          toast.success("Text extracted successfully!")
+        } else {
+          toast.error("OCR is not available in this static build. Please use the full application for image text extraction.")
+        }
+      } catch (ocrError) {
+        console.error("OCR processing error:", ocrError)
+        toast.error("Unable to process image. Please try the dynamic version of this application.")
+        URL.revokeObjectURL(imageUrl)
+      }
+    } catch (error) {
+      console.error("Failed to load OCR module:", error)
+      toast.error("OCR service is currently unavailable in this build.")
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  const handleCopyText = () => {
+    navigator.clipboard.writeText(text)
+    toast.success("Text copied to clipboard!")
+  }
+
+  const handleClearText = () => {
+    setText("")
+    setOcrText("")
+    toast.info("Text cleared")
+  }
+
+  if (!isMounted) {
+    return null; // Don't render until we're client-side
+  }
+
+  return (
+    <div className="container py-8">
+      <div className="mb-8 text-center">
+        <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-5xl">
+          Word & Sentence Counter
+        </h1>
+        <p className="text-muted-foreground">
+          Count words, sentences, characters and more. Upload an image to extract text with OCR.
+        </p>
+      </div>
+
+      <div className="grid gap-8 md:grid-cols-3">
+        <div className="md:col-span-2">
+          <Card className="p-4">
+            <div className="relative">
+              <Textarea
+                placeholder="Type your text here or upload an image..."
+                className="min-h-80 resize-none p-4 text-base"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+              />
+              {isProcessing && (
+                <div className="absolute inset-0 flex items-center justify-center bg-background/80">
+                  <div className="flex flex-col items-center space-y-2">
+                    <RefreshCw className="h-10 w-10 animate-spin text-primary" />
+                    <p>Processing image...</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => document.getElementById('file-upload')?.click()}
+              >
+                <Upload className="h-4 w-4" />
+                Upload Image {!isOcrSupported && "(Limited)"}
+              </Button>
+              <input
+                id="file-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={handleCopyText}
+                disabled={!text}
+              >
+                <Copy className="h-4 w-4" />
+                Copy Text
+              </Button>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={handleClearText}
+                disabled={!text}
+              >
+                Clear
+              </Button>
+            </div>
+
+            {!isOcrSupported && (
+              <div className="mt-4 rounded-md bg-amber-50 p-3 text-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                <p className="text-sm">
+                  OCR functionality is limited in this static build. For full OCR capabilities, please use the dynamic version.
+                </p>
+              </div>
+            )}
+          </Card>
+        </div>
+
+        <div>
+          <Card className="p-4">
+            <h2 className="mb-4 text-xl font-semibold">Text Statistics</h2>
+
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+              <div className="flex items-center gap-2 rounded-lg border p-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                  <span className="text-sm font-medium text-primary">W</span>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Words</p>
+                  {isProcessing ? (
+                    <Skeleton className="h-5 w-12" />
+                  ) : (
+                    <p className="font-medium">{stats.wordCount}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-lg border p-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                  <span className="text-sm font-medium text-primary">S</span>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Sentences</p>
+                  {isProcessing ? (
+                    <Skeleton className="h-5 w-12" />
+                  ) : (
+                    <p className="font-medium">{stats.sentenceCount}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-lg border p-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                  <span className="text-sm font-medium text-primary">C</span>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Characters</p>
+                  {isProcessing ? (
+                    <Skeleton className="h-5 w-12" />
+                  ) : (
+                    <p className="font-medium">{stats.charCount}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-lg border p-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                  <Clock className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Reading Time</p>
+                  {isProcessing ? (
+                    <Skeleton className="h-5 w-12" />
+                  ) : (
+                    <p className="font-medium">{stats.readingTime}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-lg border p-3 sm:col-span-2 md:col-span-1 lg:col-span-2">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                  <BarChart3 className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Paragraphs</p>
+                  {isProcessing ? (
+                    <Skeleton className="h-5 w-12" />
+                  ) : (
+                    <p className="font-medium">{stats.paragraphCount}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {ocrText && (
+        <Card className="mt-8 p-4">
+          <h3 className="mb-2 text-lg font-medium">Extracted Text (OCR Result)</h3>
+          <p className="text-sm text-muted-foreground">
+            This is the text extracted from your image. Edit in the box above if needed.
+          </p>
+          <div className="mt-4 max-h-60 overflow-y-auto rounded border p-3 text-sm">
+            {ocrText.split('\n').map((line, i) => (
+              <p key={`line-${i}-${line.slice(0, 8)}`}>{line || " "}</p>
+            ))}
+          </div>
+        </Card>
+      )}
+    </div>
+  )
+}
