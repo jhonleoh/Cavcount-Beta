@@ -16,11 +16,7 @@ export default function AboutPage() {
 
         <Card className="mb-8 p-6">
           <p className="mb-4 text-lg">
-            CavCount was originally a research project done in senior high school. It was developed from scratch and has been updated with new features each time. <strong>Leo</strong>, one of the creators of this app, has personally maintained and continued to develop CavCount as a free online app because it will be helpful for other students, himself, and other professionals.
-          </p>
-
-          <p className="mb-4 text-lg">
-            Leo&apos;s dedication to maintaining and improving CavCount over the years has helped it evolve from a simple school project into a valuable tool used by people around the world. His commitment to keeping the service free and ad-free has been central to the app&apos;s philosophy.
+            CavCount was originally a research project done in senior high school. It was developed from scratch and has been updated with new features each time. I am Leo, one of the creators of this app, and I decided to continue CavCount as a free online app because it will be helpful for other students, me, and other professionals.
           </p>
 
           <p className="mb-4 text-lg">
