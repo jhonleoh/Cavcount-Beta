@@ -1,6 +1,25 @@
 "use client"
 
-import { useEffect, useState } from "react"
+// Add type definitions for global Tesseract config
+declare global {
+  interface Window {
+    TESSERACT_CONFIG?: {
+      workerPath: string;
+      corePath: string;
+      langPath: string;
+    };
+    TESSERACT_DEBUG_INFO?: {
+      loadedAt: string;
+      environment: {
+        userAgent: string;
+        platform: string;
+        language: string;
+      };
+    };
+  }
+}
+
+import { useEffect, useState, useRef, useCallback } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -8,10 +27,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { BarChart3, Clock, Upload, Copy, RefreshCw } from "lucide-react"
 
-// Type definition for worker factory function
-type CreateWorkerFn = (options?: any) => Promise<TesseractWorker>;
+// Type definitions for Tesseract
+interface TesseractProgressInfo {
+  status: string;
+  progress: number;
+}
 
-// Type definition for Tesseract to avoid errors
 interface TesseractResult {
   data: {
     text: string
@@ -26,17 +47,6 @@ interface TesseractWorker {
   terminate: () => Promise<void>
 }
 
-// Mock implementation for static builds or when Tesseract fails to load
-const createMockWorker = async (): Promise<TesseractWorker> => {
-  return {
-    load: async () => {},
-    loadLanguage: async () => {},
-    initialize: async () => {},
-    recognize: async () => ({ data: { text: "OCR is not available in this static build. Please use the full application for image text extraction." } }),
-    terminate: async () => {},
-  };
-};
-
 interface TextStats {
   wordCount: number
   sentenceCount: number
@@ -45,7 +55,11 @@ interface TextStats {
   paragraphCount: number
 }
 
+// Maximum time (in ms) to wait for OCR processing before timing out
+const OCR_TIMEOUT_MS = 60000; // 60 seconds timeout
+
 export function WordCounter() {
+  // State hooks
   const [text, setText] = useState("")
   const [stats, setStats] = useState<TextStats>({
     wordCount: 0,
@@ -56,30 +70,44 @@ export function WordCounter() {
   })
   const [isProcessing, setIsProcessing] = useState(false)
   const [ocrText, setOcrText] = useState("")
-  const [isOcrSupported, setIsOcrSupported] = useState(true)
   const [isMounted, setIsMounted] = useState(false)
+  const [tesseractLoaded, setTesseractLoaded] = useState(false)
+  const [processingProgress, setProcessingProgress] = useState(0)
+
+  // Refs hooks
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const workerRef = useRef<TesseractWorker | null>(null)
+
+  // Clean up worker and timer
+  const cleanupWorker = useCallback(async () => {
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+
+    // Terminate worker if it exists
+    if (workerRef.current) {
+      try {
+        await workerRef.current.terminate()
+        console.log("Worker terminated during cleanup")
+      } catch (e) {
+        console.warn("Error terminating worker during cleanup:", e)
+      }
+      workerRef.current = null
+    }
+  }, []);
 
   // Set mounted state to ensure we're only running client-side code
   useEffect(() => {
     setIsMounted(true)
+    setTesseractLoaded(true)
 
-    // Check if we're in a static build by testing if Tesseract can be loaded
-    const checkOcrSupport = async () => {
-      try {
-        // Only import if we're in the browser
-        if (typeof window !== 'undefined') {
-          // Try to dynamically import tesseract
-          await import('tesseract.js')
-          setIsOcrSupported(true)
-        }
-      } catch (err) {
-        console.error("Tesseract.js is not available in this build:", err)
-        setIsOcrSupported(false)
-      }
+    // Cleanup function to ensure any worker is terminated
+    return () => {
+      cleanupWorker()
     }
-
-    checkOcrSupport()
-  }, [])
+  }, [cleanupWorker])
 
   // Calculate stats when text changes
   useEffect(() => {
@@ -153,10 +181,18 @@ export function WordCounter() {
     })
   }, [text])
 
-  // Handle file upload with OCR - with better static build handling
+  // Don't render anything during SSR to prevent hydration mismatch
+  if (!isMounted) {
+    return null;
+  }
+
+  // Handle file upload with OCR
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    // Reset the file input so the same file can be uploaded again
+    e.target.value = ''
 
     // Check if the file is an image
     if (!file.type.match('image.*')) {
@@ -164,66 +200,73 @@ export function WordCounter() {
       return
     }
 
+    // Check if already processing
+    if (isProcessing) {
+      toast.error("Already processing an image, please wait or reload the page")
+      return
+    }
+
     setIsProcessing(true)
+    setProcessingProgress(0)
+
+    // Create an object URL for the image
+    const imageUrl = URL.createObjectURL(file)
+
+    // Set up timeout to prevent infinite processing
+    timeoutRef.current = setTimeout(() => {
+      cleanupWorker()
+      setIsProcessing(false)
+      toast.error("OCR processing timed out. Try a clearer image or reload the page.")
+      URL.revokeObjectURL(imageUrl)
+    }, OCR_TIMEOUT_MS)
 
     try {
-      // Create a URL from the file for browser compatibility
-      const imageUrl = URL.createObjectURL(file)
+      console.log("Starting OCR process with image:", file.name)
 
-      let createWorker: CreateWorkerFn = createMockWorker;
+      // Import the library
+      const { createWorker } = await import('tesseract.js')
+
+      // Safer approach to logger function that won't have cloning issues
+      // Create worker with base configuration
+      workerRef.current = await createWorker({
+        workerPath: '/tesseract/worker.min.js',
+        corePath: '/tesseract/tesseract-core.wasm.js',
+        langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+        logger: m => {
+          console.log('tesseract log:', m);
+          if (m.status === 'recognizing text') {
+            setProcessingProgress(Math.floor(m.progress * 100));
+          }
+        }
+      });
 
       try {
-        // Attempt to dynamically import tesseract
-        const tesseractModule = await import('tesseract.js')
-        createWorker = tesseractModule.createWorker
-      } catch (err) {
-        console.error("Could not load Tesseract.js:", err)
-        // Use mock worker if Tesseract.js fails to load
-        createWorker = createMockWorker
-        setIsOcrSupported(false)
-      }
-
-      try {
-        // Create worker (real or mock)
-        const worker = await createWorker({
-          logger: (m) => console.log(m),
-          workerPath: './worker.min.js',
-          corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0',
-          langPath: 'https://tessdata.projectnaptha.com/4.0.0',
-        });
-
-        // Initialize the worker and recognize text
-        await worker.load()
-        await worker.loadLanguage('eng')
-        await worker.initialize('eng')
+        // Load and initialize the language
+        await workerRef.current.load();
+        await workerRef.current.loadLanguage('eng');
+        await workerRef.current.initialize('eng');
 
         // Process the image
-        const result = await worker.recognize(imageUrl)
+        const result = await workerRef.current.recognize(imageUrl);
 
         // Set the recognized text
-        const extractedText = result.data.text
-        setText(extractedText)
-        setOcrText(extractedText)
+        const extractedText = result.data.text;
+        setText(extractedText);
+        setOcrText(extractedText);
 
-        // Clean up
-        await worker.terminate()
-        URL.revokeObjectURL(imageUrl)
-
-        if (isOcrSupported) {
-          toast.success("Text extracted successfully!")
-        } else {
-          toast.error("OCR is not available in this static build. Please use the full application for image text extraction.")
-        }
-      } catch (ocrError) {
-        console.error("OCR processing error:", ocrError)
-        toast.error("Unable to process image. Please try the dynamic version of this application.")
-        URL.revokeObjectURL(imageUrl)
+        toast.success("Text extracted successfully!");
+      } catch (initError) {
+        console.error("OCR initialization error:", initError);
+        throw new Error(`Failed to process image: ${initError instanceof Error ? initError.message : 'Unknown error'}`);
       }
-    } catch (error) {
-      console.error("Failed to load OCR module:", error)
-      toast.error("OCR service is currently unavailable in this build.")
+    } catch (ocrError) {
+      console.error("OCR processing error:", ocrError)
+      toast.error(`OCR failed: ${ocrError instanceof Error ? ocrError.message : 'Unknown error'}. Try a clearer image.`)
     } finally {
+      // Always clean up
+      await cleanupWorker()
       setIsProcessing(false)
+      URL.revokeObjectURL(imageUrl)
     }
   }
 
@@ -236,10 +279,6 @@ export function WordCounter() {
     setText("")
     setOcrText("")
     toast.info("Text cleared")
-  }
-
-  if (!isMounted) {
-    return null; // Don't render until we're client-side
   }
 
   return (
@@ -267,7 +306,15 @@ export function WordCounter() {
                 <div className="absolute inset-0 flex items-center justify-center bg-background/80">
                   <div className="flex flex-col items-center space-y-2">
                     <RefreshCw className="h-10 w-10 animate-spin text-primary" />
-                    <p>Processing image...</p>
+                    <p>Processing image... {processingProgress}%</p>
+                    {processingProgress > 0 && processingProgress < 100 && (
+                      <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary"
+                          style={{ width: `${processingProgress}%` }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -277,9 +324,10 @@ export function WordCounter() {
                 variant="outline"
                 className="flex items-center gap-2"
                 onClick={() => document.getElementById('file-upload')?.click()}
+                disabled={isProcessing}
               >
                 <Upload className="h-4 w-4" />
-                Upload Image {!isOcrSupported && "(Limited)"}
+                Upload Image
               </Button>
               <input
                 id="file-upload"
@@ -287,12 +335,13 @@ export function WordCounter() {
                 accept="image/*"
                 className="hidden"
                 onChange={handleFileUpload}
+                disabled={isProcessing}
               />
               <Button
                 variant="outline"
                 className="flex items-center gap-2"
                 onClick={handleCopyText}
-                disabled={!text}
+                disabled={!text || isProcessing}
               >
                 <Copy className="h-4 w-4" />
                 Copy Text
@@ -301,19 +350,11 @@ export function WordCounter() {
                 variant="outline"
                 className="flex items-center gap-2"
                 onClick={handleClearText}
-                disabled={!text}
+                disabled={!text || isProcessing}
               >
                 Clear
               </Button>
             </div>
-
-            {!isOcrSupported && (
-              <div className="mt-4 rounded-md bg-amber-50 p-3 text-amber-800 dark:bg-amber-950 dark:text-amber-200">
-                <p className="text-sm">
-                  OCR functionality is limited in this static build. For full OCR capabilities, please use the dynamic version.
-                </p>
-              </div>
-            )}
           </Card>
         </div>
 
