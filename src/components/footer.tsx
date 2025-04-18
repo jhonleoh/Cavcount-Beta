@@ -1,10 +1,17 @@
 "use client"
 
 import Link from "next/link"
-import { Github, Heart } from "lucide-react"
+import { Facebook, Heart } from "lucide-react"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
+
+  // Function to handle Facebook click - temporary placeholder
+  const handleFacebookClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Will be configured later to navigate to the actual Facebook page
+    console.log("Facebook link clicked");
+  }
 
   return (
     <footer className="border-t bg-background">
@@ -34,15 +41,14 @@ export function Footer() {
             >
               Privacy
             </Link>
-            <a
-              href="https://github.com/naptha/tesseract.js"
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted-foreground transition-colors hover:text-foreground"
+            <button
+              onClick={handleFacebookClick}
+              className="text-muted-foreground transition-colors hover:text-foreground flex items-center"
+              aria-label="Facebook"
             >
-              <Github className="h-4 w-4" />
-              <span className="sr-only">GitHub</span>
-            </a>
+              <Facebook className="h-4 w-4" />
+              <span className="sr-only">Facebook</span>
+            </button>
             <div className="flex items-center gap-1 text-muted-foreground">
               <span>Made with</span>
               <Heart className="h-4 w-4 text-red-500" />

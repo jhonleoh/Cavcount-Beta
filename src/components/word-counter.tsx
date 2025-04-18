@@ -199,7 +199,7 @@ export function WordCounter() {
         <h1 className="mb-2 md:mb-4 text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
           Word & Sentence Counter
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground light-mode-text">
           Count words, sentences, characters and more. Upload an image to extract text with OCR.
         </p>
       </div>
@@ -215,7 +215,7 @@ export function WordCounter() {
             ✕
           </button>
           <h3 className="text-lg font-medium mb-1">Update Announcement</h3>
-          <p className="text-sm">
+          <p className="text-sm light-mode-text">
             <span className="font-semibold">v1.1.0 Updates:</span> Improved mobile responsiveness,
             enhanced sentence detection algorithm, more accurate reading time calculation,
             and improved OCR processing.
@@ -243,7 +243,7 @@ export function WordCounter() {
               )}
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              {/* Use our new OCR processor component */}
+              {/* Use our OCR processor component */}
               <OCRProcessor
                 onTextExtracted={handleTextExtracted}
                 isProcessing={isProcessing}
@@ -285,7 +285,7 @@ export function WordCounter() {
                   {isProcessing ? (
                     <Skeleton className="h-5 w-12" />
                   ) : (
-                    <p className="font-medium">{stats.wordCount}</p>
+                    <p className="font-medium light-mode-text">{stats.wordCount}</p>
                   )}
                 </div>
               </div>
@@ -299,7 +299,7 @@ export function WordCounter() {
                   {isProcessing ? (
                     <Skeleton className="h-5 w-12" />
                   ) : (
-                    <p className="font-medium">{stats.sentenceCount}</p>
+                    <p className="font-medium light-mode-text">{stats.sentenceCount}</p>
                   )}
                 </div>
               </div>
@@ -313,7 +313,7 @@ export function WordCounter() {
                   {isProcessing ? (
                     <Skeleton className="h-5 w-12" />
                   ) : (
-                    <p className="font-medium">{stats.charCount}</p>
+                    <p className="font-medium light-mode-text">{stats.charCount}</p>
                   )}
                 </div>
               </div>
@@ -327,7 +327,7 @@ export function WordCounter() {
                   {isProcessing ? (
                     <Skeleton className="h-5 w-12" />
                   ) : (
-                    <p className="font-medium reading-time">{stats.readingTime}</p>
+                    <p className="font-medium reading-time light-mode-text">{stats.readingTime}</p>
                   )}
                 </div>
               </div>
@@ -341,7 +341,7 @@ export function WordCounter() {
                   {isProcessing ? (
                     <Skeleton className="h-5 w-12" />
                   ) : (
-                    <p className="font-medium">{stats.paragraphCount}</p>
+                    <p className="font-medium light-mode-text">{stats.paragraphCount}</p>
                   )}
                 </div>
               </div>
@@ -353,10 +353,10 @@ export function WordCounter() {
       {ocrText && (
         <Card className="mt-6 md:mt-8 p-4">
           <h3 className="mb-2 text-lg font-medium">Extracted Text (OCR Result)</h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground light-mode-text">
             This is the text extracted from your image. Edit in the box above if needed.
           </p>
-          <div className="mt-4 max-h-48 md:max-h-60 overflow-y-auto rounded border p-3 text-sm">
+          <div className="mt-4 max-h-48 md:max-h-60 overflow-y-auto rounded border p-3 text-sm light-mode-text">
             {ocrText.split('\n').map((line, i) => (
               <p key={`line-${i}-${line.slice(0, 8)}`}>{line || " "}</p>
             ))}
