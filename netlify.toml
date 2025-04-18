@@ -3,13 +3,23 @@
   publish = ".next"
 
 [build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+  NETLIFY_NEXT_PLUGIN_SKIP = "false"
+  NODE_VERSION = "18"
+  NEXT_TELEMETRY_DISABLED = "1"
 
 [functions]
   node_bundler = "esbuild"
+  included_files = ["**/.next/**"]
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
 [images]
-  remote_images = ["https://github.com/**", "https://ext.same-assets.com/**", "https://ugc.same-assets.com/**"]
+  remote_images = [
+    "https://github.com/**",
+    "https://ext.same-assets.com/**",
+    "https://ugc.same-assets.com/**",
+    "https://cdn.jsdelivr.net/**",
+    "https://unpkg.com/**",
+    "https://tessdata.projectnaptha.com/**"
+  ]

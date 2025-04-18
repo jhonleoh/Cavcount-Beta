@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Add static export configuration
-  output: 'export',
-  distDir: 'out',
-  // Add assetPrefix to ensure workers can be loaded properly in static builds - must start with slash
-  assetPrefix: '/',
+  // Configure for dynamic deployment (no static export)
+  reactStrictMode: true,
   images: {
     domains: [
       "source.unsplash.com",

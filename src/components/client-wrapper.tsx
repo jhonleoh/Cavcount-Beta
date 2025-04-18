@@ -1,25 +1,28 @@
-"use client";
+'use client';
 
 import type React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-interface ClientBodyProps {
+interface ClientWrapperProps {
   children: React.ReactNode;
 }
 
-export default function ClientBody({ children }: ClientBodyProps) {
-  // Pre-initialize Tesseract worker on the client side only
+export function ClientWrapper({ children }: ClientWrapperProps) {
+  const [mounted, setMounted] = useState(false);
+
+  // Initialize Tesseract preloading
   useEffect(() => {
-    // This preloads and initializes the worker in the browser for faster OCR later
+    setMounted(true);
+
+    // Preload Tesseract only in browser environments
     const preloadTesseract = async () => {
       try {
-        // Only try to load Tesseract in client-side environment
         if (typeof window !== 'undefined') {
           // Dynamically import tesseract.js
           const { createWorker } = await import('tesseract.js');
-          console.log('Tesseract.js module loaded successfully');
+          console.log('Tesseract.js module preloaded successfully');
 
-          // Preload the worker to test if it's working
+          // Preload the worker configuration
           const worker = await createWorker({
             logger: progress => console.log('Tesseract worker loading:', progress),
             workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/worker.min.js',
@@ -27,11 +30,11 @@ export default function ClientBody({ children }: ClientBodyProps) {
             langPath: 'https://tessdata.projectnaptha.com/4.0.0',
           });
 
-          // Initialize but don't do full recognition yet
+          // Initialize base worker
           await worker.load();
           console.log('Tesseract worker loaded successfully');
 
-          // Terminate immediately - this was just to test loading
+          // Clean up
           await worker.terminate();
         }
       } catch (error) {
@@ -41,6 +44,11 @@ export default function ClientBody({ children }: ClientBodyProps) {
 
     preloadTesseract();
   }, []);
+
+  // Return null on server-side, avoid hydration mismatch by rendering only on client
+  if (!mounted) {
+    return null;
+  }
 
   return <>{children}</>;
 }
