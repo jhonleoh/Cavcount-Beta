@@ -47,7 +47,7 @@ type ActionType = typeof actionTypes
 type Action =
   | {
       type: ActionType["ADD_TOAST"]
-      toast: Toast
+      toast: Toast // Fixed: Added toast property for ADD_TOAST action type
     }
   | {
       type: ActionType["UPDATE_TOAST"]

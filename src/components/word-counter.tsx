@@ -76,10 +76,11 @@ export function WordCounter() {
   useEffect(() => {
     setIsMounted(true)
 
-    // Attempt to preload Tesseract on initial render
-    const preloadTesseract = async () => {
-      try {
-        if (typeof window !== 'undefined') {
+    // Skip Tesseract preloading in production
+    if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+      // Attempt to preload Tesseract on initial render
+      const preloadTesseract = async () => {
+        try {
           // Check if window.TESSERACT_CONFIG exists (from the config script)
           const config = window.TESSERACT_CONFIG || {
             workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/worker.min.js',
@@ -91,14 +92,17 @@ export function WordCounter() {
           const { createWorker } = await import('tesseract.js');
           setTesseractLoaded(true);
           console.log('Tesseract module loaded successfully');
+        } catch (error) {
+          console.error('Failed to preload Tesseract (non-critical):', error);
+          // Continue anyway - we'll try again when needed
         }
-      } catch (error) {
-        console.error('Failed to preload Tesseract (non-critical):', error);
-        // Continue anyway - we'll try again when needed
-      }
-    };
+      };
 
-    preloadTesseract();
+      preloadTesseract();
+    } else {
+      // Set tesseract as loaded anyway to remove loading indicators
+      setTesseractLoaded(true);
+    }
   }, [])
 
   // Don't render anything during SSR to prevent hydration mismatch

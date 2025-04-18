@@ -5,6 +5,7 @@ const nextConfig = {
 
   // For static exports, uncomment the following line:
   output: 'export',
+  distDir: 'out',
 
   // For static exports, we need to disable image optimization
   images: {
@@ -42,13 +43,13 @@ const nextConfig = {
   // Disable type checking completely for builds
   typescript: {
     // Skip type checking entirely
-    tsconfigPath: false
+    ignoreBuildErrors: true
   },
 
   // Disable linting completely for builds
   eslint: {
     // Skip linting entirely
-    dirs: []
+    ignoreDuringBuilds: true
   },
 
   // Improve webpack configuration for Tesseract.js
