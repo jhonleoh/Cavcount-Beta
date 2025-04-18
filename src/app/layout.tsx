@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description:
     "Instantly count words, sentences, and characters from any text or image. CavCount's free OCR tool accurately extracts text from photos and screenshots with advanced sentence detection.",
   keywords: "word counter, sentence counter, character counter, OCR, text extraction, image to text, free OCR tool, reading time calculator",
-  authors: [{ name: "Cavcount Team", url: "https://cavcount.app" }],
+  authors: [{ name: "Cavcount Team", url: "https://cavcount.com" }],
   creator: "Cavcount",
   publisher: "Cavcount",
   formatDetection: {
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://cavcount.app"),
+  metadataBase: new URL("https://cavcount.com"),
   alternates: {
     canonical: "/",
   },
@@ -56,13 +56,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
     description: "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
-    url: "https://cavcount.app",
+    url: "https://cavcount.com",
     siteName: "CavCount",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://cavcount.app/og-image.png", // You'll need to create this image
+        url: "https://cavcount.com/og-image.png", // You'll need to create this image
         width: 1200,
         height: 630,
         alt: "CavCount - Modern Word Counter with OCR",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     title: "CavCount - OCR Word & Sentence Counter",
     description: "Instantly count words, sentences, and characters from any text or image with OCR",
     creator: "@cavcount",
-    images: ["https://cavcount.app/twitter-image.png"], // You'll need to create this image
+    images: ["https://cavcount.com/twitter-image.png"], // You'll need to create this image
   },
   icons: {
     icon: "/favicon.ico",
@@ -116,7 +116,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "CavCount",
-              "url": "https://cavcount.app",
+              "url": "https://cavcount.com",
               "description": "A free word counting and text analysis tool with OCR capabilities",
               "applicationCategory": "Utility",
               "offers": {
@@ -134,7 +134,7 @@ export default function RootLayout({
                 "Reading time calculation",
                 "Paragraph counting"
               ],
-              "screenshot": "https://cavcount.app/screenshot.png",
+              "screenshot": "https://cavcount.com/screenshot.png",
               "creator": {
                 "@type": "Organization",
                 "name": "Cavcount",
@@ -154,19 +154,19 @@ export default function RootLayout({
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Home",
-                  "item": "https://cavcount.app"
+                  "item": "https://cavcount.com"
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": "Word Counter",
-                  "item": "https://cavcount.app/#counter"
+                  "item": "https://cavcount.com/#counter"
                 },
                 {
                   "@type": "ListItem",
                   "position": 3,
                   "name": "OCR Tool",
-                  "item": "https://cavcount.app/#ocr"
+                  "item": "https://cavcount.com/#ocr"
                 }
               ]
             }

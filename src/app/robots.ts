@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/_next/'],
     },
-    sitemap: 'https://cavcount.app/sitemap.xml',
-    host: 'https://cavcount.app',
+    sitemap: 'https://cavcount.com/sitemap.xml',
+    host: 'https://cavcount.com',
   };
 }
