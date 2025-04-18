@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AppClientLayout } from "@/components/app-client-layout";
+import ClientBody from "./ClientBody";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,16 +21,13 @@ export const metadata: Metadata = {
   title: "CavCount - OCR Word & Sentence Counter | Image to Text",
   description:
     "Instantly count words & sentences from images! CavCount's free OCR tool accurately extracts text from any photo or screenshot. Get word counts in seconds.",
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html
       lang="en"
@@ -34,19 +35,19 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Add Tesseract.js configuration script - needed for static export */}
         <script src="/tesseract-config.js" defer />
-        <meta
-          name="description"
-          content="CavCount - Modern Word & Sentence Counter with OCR capabilities"
-        />
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://*; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*;"
-        />
       </head>
-      <body className="antialiased">
-        <AppClientLayout>{children}</AppClientLayout>
-      </body>
+      <ClientBody>
+        <ThemeProvider defaultTheme="dark" storageKey="cavcount-theme">
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+          <Toaster />
+        </ThemeProvider>
+      </ClientBody>
     </html>
   );
 }

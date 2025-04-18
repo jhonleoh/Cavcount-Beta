@@ -1,24 +1,5 @@
 "use client"
 
-// Add type definitions for global Tesseract config
-declare global {
-  interface Window {
-    TESSERACT_CONFIG?: {
-      workerPath: string;
-      corePath: string;
-      langPath: string;
-    };
-    TESSERACT_DEBUG_INFO?: {
-      loadedAt: string;
-      environment: {
-        userAgent: string;
-        platform: string;
-        language: string;
-      };
-    };
-  }
-}
-
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -27,15 +8,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { BarChart3, Clock, Upload, Copy, RefreshCw } from "lucide-react"
 
-// Type definitions for Tesseract
-type TesseractWorkerOptions = {
-  logger?: (arg: { status: string, progress: number } | unknown) => void;
-  workerPath?: string;
-  corePath?: string;
-  langPath?: string;
-};
-type CreateWorkerFn = (options?: TesseractWorkerOptions) => Promise<TesseractWorker>;
+// Type definition for worker factory function
+type CreateWorkerFn = (options?: any) => Promise<TesseractWorker>;
 
+// Type definition for Tesseract to avoid errors
 interface TesseractResult {
   data: {
     text: string
@@ -49,6 +25,17 @@ interface TesseractWorker {
   recognize: (image: File | string) => Promise<TesseractResult>
   terminate: () => Promise<void>
 }
+
+// Mock implementation for static builds or when Tesseract fails to load
+const createMockWorker = async (): Promise<TesseractWorker> => {
+  return {
+    load: async () => {},
+    loadLanguage: async () => {},
+    initialize: async () => {},
+    recognize: async () => ({ data: { text: "OCR is not available in this static build. Please use the full application for image text extraction." } }),
+    terminate: async () => {},
+  };
+};
 
 interface TextStats {
   wordCount: number
@@ -69,46 +56,30 @@ export function WordCounter() {
   })
   const [isProcessing, setIsProcessing] = useState(false)
   const [ocrText, setOcrText] = useState("")
+  const [isOcrSupported, setIsOcrSupported] = useState(true)
   const [isMounted, setIsMounted] = useState(false)
-  const [tesseractLoaded, setTesseractLoaded] = useState(false)
 
   // Set mounted state to ensure we're only running client-side code
   useEffect(() => {
     setIsMounted(true)
 
-    // Skip Tesseract preloading in production
-    if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-      // Attempt to preload Tesseract on initial render
-      const preloadTesseract = async () => {
-        try {
-          // Check if window.TESSERACT_CONFIG exists (from the config script)
-          const config = window.TESSERACT_CONFIG || {
-            workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/worker.min.js',
-            corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0/dist/tesseract-core.wasm.js',
-            langPath: 'https://tessdata.projectnaptha.com/4.0.0',
-          };
-
-          // Import inside the try/catch for safer error handling
-          const { createWorker } = await import('tesseract.js');
-          setTesseractLoaded(true);
-          console.log('Tesseract module loaded successfully');
-        } catch (error) {
-          console.error('Failed to preload Tesseract (non-critical):', error);
-          // Continue anyway - we'll try again when needed
+    // Check if we're in a static build by testing if Tesseract can be loaded
+    const checkOcrSupport = async () => {
+      try {
+        // Only import if we're in the browser
+        if (typeof window !== 'undefined') {
+          // Try to dynamically import tesseract
+          await import('tesseract.js')
+          setIsOcrSupported(true)
         }
-      };
-
-      preloadTesseract();
-    } else {
-      // Set tesseract as loaded anyway to remove loading indicators
-      setTesseractLoaded(true);
+      } catch (err) {
+        console.error("Tesseract.js is not available in this build:", err)
+        setIsOcrSupported(false)
+      }
     }
-  }, [])
 
-  // Don't render anything during SSR to prevent hydration mismatch
-  if (!isMounted) {
-    return null;
-  }
+    checkOcrSupport()
+  }, [])
 
   // Calculate stats when text changes
   useEffect(() => {
@@ -182,7 +153,7 @@ export function WordCounter() {
     })
   }, [text])
 
-  // Handle file upload with OCR
+  // Handle file upload with OCR - with better static build handling
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -196,56 +167,61 @@ export function WordCounter() {
     setIsProcessing(true)
 
     try {
+      // Create a URL from the file for browser compatibility
       const imageUrl = URL.createObjectURL(file)
 
-      console.log("Importing tesseract.js...");
-      const tesseractModule = await import('tesseract.js')
-      const createWorker = tesseractModule.createWorker
-      console.log("Tesseract.js imported successfully");
+      let createWorker: CreateWorkerFn = createMockWorker;
 
-      // Create worker with CDN paths for maximum compatibility
-      console.log("Creating Tesseract worker...");
-      // Use window.TESSERACT_CONFIG if available, otherwise use defaults
-      const config = window.TESSERACT_CONFIG || {
-        workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/worker.min.js',
-        corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0/dist/tesseract-core.wasm.js',
-        langPath: 'https://tessdata.projectnaptha.com/4.0.0',
-      };
+      try {
+        // Attempt to dynamically import tesseract
+        const tesseractModule = await import('tesseract.js')
+        createWorker = tesseractModule.createWorker
+      } catch (err) {
+        console.error("Could not load Tesseract.js:", err)
+        // Use mock worker if Tesseract.js fails to load
+        createWorker = createMockWorker
+        setIsOcrSupported(false)
+      }
 
-      const worker = await createWorker({
-        logger: (m) => console.log("Tesseract worker progress:", m),
-        ...config
-      });
-      console.log("Tesseract worker created successfully");
+      try {
+        // Create worker (real or mock)
+        const worker = await createWorker({
+          logger: (m) => console.log(m),
+          workerPath: './worker.min.js',
+          corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@6.0.0',
+          langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+        });
 
-      // Initialize the worker and recognize text
-      console.log("Loading Tesseract worker...");
-      await worker.load()
-      console.log("Loading English language data...");
-      await worker.loadLanguage('eng')
-      console.log("Initializing worker with English language...");
-      await worker.initialize('eng')
-      console.log("Worker initialized, starting image recognition...");
+        // Initialize the worker and recognize text
+        await worker.load()
+        await worker.loadLanguage('eng')
+        await worker.initialize('eng')
 
-      // Process the image
-      const result = await worker.recognize(imageUrl)
-      console.log("Recognition complete");
+        // Process the image
+        const result = await worker.recognize(imageUrl)
 
-      // Set the recognized text
-      const extractedText = result.data.text
-      setText(extractedText)
-      setOcrText(extractedText)
-      console.log("Text extraction successful");
+        // Set the recognized text
+        const extractedText = result.data.text
+        setText(extractedText)
+        setOcrText(extractedText)
 
-      // Clean up
-      await worker.terminate()
-      URL.revokeObjectURL(imageUrl)
-      console.log("Worker terminated and resources cleaned up");
+        // Clean up
+        await worker.terminate()
+        URL.revokeObjectURL(imageUrl)
 
-      toast.success("Text extracted successfully!")
-    } catch (ocrError) {
-      console.error("OCR processing error:", ocrError)
-      toast.error(`Unable to process image: ${ocrError instanceof Error ? ocrError.message : 'Unknown error'}`)
+        if (isOcrSupported) {
+          toast.success("Text extracted successfully!")
+        } else {
+          toast.error("OCR is not available in this static build. Please use the full application for image text extraction.")
+        }
+      } catch (ocrError) {
+        console.error("OCR processing error:", ocrError)
+        toast.error("Unable to process image. Please try the dynamic version of this application.")
+        URL.revokeObjectURL(imageUrl)
+      }
+    } catch (error) {
+      console.error("Failed to load OCR module:", error)
+      toast.error("OCR service is currently unavailable in this build.")
     } finally {
       setIsProcessing(false)
     }
@@ -260,6 +236,10 @@ export function WordCounter() {
     setText("")
     setOcrText("")
     toast.info("Text cleared")
+  }
+
+  if (!isMounted) {
+    return null; // Don't render until we're client-side
   }
 
   return (
@@ -299,7 +279,7 @@ export function WordCounter() {
                 onClick={() => document.getElementById('file-upload')?.click()}
               >
                 <Upload className="h-4 w-4" />
-                Upload Image
+                Upload Image {!isOcrSupported && "(Limited)"}
               </Button>
               <input
                 id="file-upload"
@@ -326,6 +306,14 @@ export function WordCounter() {
                 Clear
               </Button>
             </div>
+
+            {!isOcrSupported && (
+              <div className="mt-4 rounded-md bg-amber-50 p-3 text-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                <p className="text-sm">
+                  OCR functionality is limited in this static build. For full OCR capabilities, please use the dynamic version.
+                </p>
+              </div>
+            )}
           </Card>
         </div>
 

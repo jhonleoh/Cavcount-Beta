@@ -1,32 +1,15 @@
 [build]
-  command = "npm install && npm run build"
-  publish = "out"
+  command = "bun run build"
+  publish = ".next"
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
-  NODE_VERSION = "18"
-  NEXT_TELEMETRY_DISABLED = "1"
-  NEXT_SKIP_LINT = "true"
-  NEXT_TYPESCRIPT_CHECK = "false"
-  NEXT_DISABLE_TYPESCRIPT_CHECK = "true"
-  NEXT_IGNORE_TYPESCRIPT_ERRORS = "true"
-  NODE_OPTIONS = "--max-old-space-size=4096"
-  SKIP_ESLINT_CHECK = "true"
-  SKIP_TYPE_CHECK = "true"
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Content-Security-Policy = "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; style-src * 'unsafe-inline'; font-src * 'unsafe-inline';"
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
+[functions]
+  node_bundler = "esbuild"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [images]
-  remote_images = [
-    "https://github.com/**",
-    "https://ext.same-assets.com/**",
-    "https://ugc.same-assets.com/**",
-    "https://cdn.jsdelivr.net/**",
-    "https://unpkg.com/**",
-    "https://tessdata.projectnaptha.com/**"
-  ]
+  remote_images = ["https://github.com/**", "https://ext.same-assets.com/**", "https://ugc.same-assets.com/**"]

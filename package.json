@@ -5,10 +5,8 @@
   "author": "Leo via Same",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0",
-    "build": "SKIP_ESLINT_CHECK=true SKIP_TYPE_CHECK=true NEXT_DISABLE_TYPESCRIPT_CHECK=true NEXT_SKIP_LINT=true next build --no-lint",
-    "build:static": "node build-wrapper.js && next export",
-    "export": "next export",
+    "dev": "next dev -H 0.0.0.0 --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "bunx biome lint --write && bunx tsc --noEmit",
     "format": "bunx biome format --write"
