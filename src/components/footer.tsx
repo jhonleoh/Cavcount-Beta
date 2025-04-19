@@ -77,9 +77,11 @@ export function Footer() {
         <div className="flex items-center">
           <nav className="flex items-center gap-4 text-sm font-medium">
             <button
-              onClick={handleFacebookClick}
+              href="https://www.facebook.com/Cavcount"
               className="text-muted-foreground transition-colors hover:text-foreground flex items-center"
               aria-label="Facebook"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <Facebook className="h-4 w-4" />
               <span className="sr-only">Facebook</span>

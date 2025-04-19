@@ -2,21 +2,21 @@
 title: "Getting Started with Cavcount"
 description: "Learn how to use Cavcount to count words and perform OCR"
 date: "2025-04-19"
-author: "Cavcount Team"
-image: "/content/images/first-article-banner.jpg"
+author: "Leo"
+image: "/content/images/cavcount-banner.png"
 tags: ["tutorial", "OCR", "word-counter"]
 ---
 
-# Getting Started with Cavcount
+# Getting Started with CavCount
 
-Cavcount is a powerful tool for counting words, sentences, and characters in your text. It also offers OCR capabilities to extract text from images.
+CavCount is an online tool to count words, characters, and sentences in your text. Additionally, it has OCR functions to obtain text from photos.
 
 ## Features
 
-- **Word Counting**: Accurately counts the number of words in any text
-- **Sentence Detection**: Advanced algorithm to detect sentences properly
-- **OCR Technology**: Extract text from images instantly
-- **Reading Time**: Estimates how long it takes to read your content
+- **Word counting**: CavCount checks how many words are contained in the text and counts them accurately
+- **Sentence Detection**: Uses more complex technology for proper sentence detection
+- **OCR Technology**: Text extraction from pictures is done promptly
+- **Reading Time**: Calculate the approximate reading time required for your text
 
 ## How to Use
 
@@ -24,11 +24,4 @@ Cavcount is a powerful tool for counting words, sentences, and characters in you
 2. Upload an image if you want to extract text
 3. View the statistics immediately
 
-```javascript
-// Example code for implementing word counting
-function countWords(text) {
-  return text.split(/\s+/).filter(Boolean).length;
-}
-```
-
-Stay tuned for more tutorials on how to make the most of Cavcount!
+Stay tuned for more tutorials on how to make the most of CavCount!
