@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ArticleImageProps {
   src: string;
@@ -10,25 +10,30 @@ interface ArticleImageProps {
 
 export function ArticleImage({ src, alt }: ArticleImageProps) {
   const [hasError, setHasError] = useState(false);
+  const [imageSrc, setImageSrc] = useState(src);
 
-  if (hasError) {
-    return (
-      <div className="flex items-center justify-center w-full h-full bg-muted">
-        <div className="text-center px-4">
-          <p className="text-muted-foreground text-lg font-medium">No image available</p>
-        </div>
-      </div>
-    );
-  }
+  // Reset error state if src changes
+  useEffect(() => {
+    setHasError(false);
+    setImageSrc(src);
+  }, [src]);
+
+  // Handle image errors
+  const handleImageError = () => {
+    console.error(`Failed to load image: ${src}`);
+    setHasError(true);
+    setImageSrc('/placeholder.png'); // Set to placeholder instead of showing error state
+  };
 
   return (
     <Image
-      src={src}
+      src={hasError ? '/placeholder.png' : imageSrc}
       alt={alt}
       fill
       priority
       className="object-cover"
-      onError={() => setHasError(true)}
+      onError={handleImageError}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
     />
   );
 }

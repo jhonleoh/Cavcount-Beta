@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ArticleMetadata } from "@/lib/article-utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ArticleCardProps {
   article: ArticleMetadata;
@@ -12,6 +12,13 @@ interface ArticleCardProps {
 
 export function ArticleCard({ article }: ArticleCardProps) {
   const [imageError, setImageError] = useState(false);
+  const [imageSrc, setImageSrc] = useState(article.image);
+
+  // Reset error state if image src changes
+  useEffect(() => {
+    setImageError(false);
+    setImageSrc(article.image);
+  }, [article.image]);
 
   const formattedDate = new Date(article.date).toLocaleDateString("en-US", {
     year: "numeric",
@@ -19,28 +26,27 @@ export function ArticleCard({ article }: ArticleCardProps) {
     day: "numeric",
   });
 
-  // Use direct links to static pages
+  // Use direct links to dynamic article pages
   const articleUrl = `/articles/${article.slug}`;
+
+  const handleImageError = () => {
+    console.error(`Failed to load article card image: ${imageSrc}`);
+    setImageError(true);
+    setImageSrc('/placeholder.png');
+  };
 
   return (
     <Card className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow duration-200">
       <a href={articleUrl} className="block h-48 relative overflow-hidden">
-        {imageError ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <div className="text-center px-4">
-              <p className="text-muted-foreground">No image available</p>
-            </div>
-          </div>
-        ) : (
-          <Image
-            src={article.image}
-            alt={article.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transform hover:scale-105 transition-transform duration-300"
-            onError={() => setImageError(true)}
-          />
-        )}
+        <Image
+          src={imageSrc}
+          alt={article.title}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover transform hover:scale-105 transition-transform duration-300"
+          onError={handleImageError}
+          priority={true}
+        />
       </a>
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-center text-sm text-muted-foreground mb-2">

@@ -1,6 +1,6 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
-import { getArticleData, getArticleSlugs } from "@/lib/article-utils";
+import { getArticleData, getArticleSlugs, validateSlug } from "@/lib/article-utils";
 import { ArticleImage } from "@/components/article-image";
 import { ArrowLeft } from "lucide-react";
 import Script from "next/script";
@@ -17,11 +17,13 @@ export async function generateMetadata(
   { params }: ArticlePageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const slug = params.slug;
+
   // Get valid article slugs
   const slugs = getArticleSlugs();
 
   // If the slug doesn't exist, return basic metadata
-  if (!slugs.includes(params.slug)) {
+  if (!slugs.includes(slug)) {
     return {
       title: "Article Not Found | Cavcount",
       description: "The requested article could not be found.",
@@ -29,7 +31,7 @@ export async function generateMetadata(
   }
 
   try {
-    const article = await getArticleData(params.slug);
+    const article = await getArticleData(slug);
 
     return {
       title: `${article.title} | Cavcount`,
@@ -65,16 +67,15 @@ export async function generateStaticParams() {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  // Get valid article slugs
-  const slugs = getArticleSlugs();
+  const slug = params.slug;
 
   // Check if the requested slug exists
-  if (!slugs.includes(params.slug)) {
+  if (!validateSlug(slug)) {
     notFound();
   }
 
   // Get article data
-  const article = await getArticleData(params.slug);
+  const article = await getArticleData(slug);
   const schema = generateArticleSchema(article);
 
   // Format the date

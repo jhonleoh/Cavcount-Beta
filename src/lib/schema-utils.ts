@@ -22,6 +22,31 @@ export function generateArticleSchema(article: ArticleMetadata & { contentHtml: 
     ? article.image
     : `${baseUrl}${article.image}`;
 
+  // Generate proper breadcrumb list for structured data
+  const breadcrumbList = {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Articles",
+        "item": `${baseUrl}/articles`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": article.title,
+        "item": `${baseUrl}/articles/${article.slug}`
+      }
+    ]
+  };
+
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -48,7 +73,8 @@ export function generateArticleSchema(article: ArticleMetadata & { contentHtml: 
     },
     "wordCount": wordCount,
     "timeRequired": `PT${readingTime}M`,
-    "keywords": article.tags.join(", ")
+    "keywords": article.tags.join(", "),
+    "breadcrumb": breadcrumbList
   };
 }
 
@@ -58,6 +84,25 @@ export function generateArticleSchema(article: ArticleMetadata & { contentHtml: 
 export function generateArticlesListSchema(articles: ArticleMetadata[]) {
   // Base URL for the site
   const baseUrl = "https://cavcount.app";
+
+  // Generate breadcrumb list for the articles page
+  const breadcrumbList = {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Articles",
+        "item": `${baseUrl}/articles`
+      }
+    ]
+  };
 
   const itemListElements = articles.map((article, index) => ({
     "@type": "ListItem",
@@ -86,6 +131,146 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
       "@id": `${baseUrl}/articles`,
       "name": "Articles | Cavcount",
       "description": "Read the latest articles about text analysis, OCR technology, and writing tips."
-    }
+    },
+    "breadcrumb": breadcrumbList
+  };
+}
+
+/**
+ * Generates Schema.org structured data for the home page
+ */
+export function generateHomePageSchema() {
+  const baseUrl = "https://cavcount.app";
+
+  // Home page only has itself in the breadcrumb
+  const breadcrumbList = {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      }
+    ]
+  };
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": baseUrl,
+    "name": "Cavcount",
+    "description": "Count words and extract text from images with Cavcount's tools",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${baseUrl}/search?q={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    },
+    "breadcrumb": breadcrumbList
+  };
+}
+
+/**
+ * Generates Schema.org structured data for the About page
+ */
+export function generateAboutPageSchema() {
+  const baseUrl = "https://cavcount.app";
+
+  const breadcrumbList = {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About",
+        "item": `${baseUrl}/about`
+      }
+    ]
+  };
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "url": `${baseUrl}/about`,
+    "name": "About Cavcount",
+    "description": "Learn about Cavcount's mission, features, and the team behind the text analysis tools",
+    "breadcrumb": breadcrumbList
+  };
+}
+
+/**
+ * Generates Schema.org structured data for the Privacy page
+ */
+export function generatePrivacyPageSchema() {
+  const baseUrl = "https://cavcount.app";
+
+  const breadcrumbList = {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Privacy Policy",
+        "item": `${baseUrl}/privacy`
+      }
+    ]
+  };
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "url": `${baseUrl}/privacy`,
+    "name": "Privacy Policy | Cavcount",
+    "description": "Cavcount's privacy policy and data protection information",
+    "breadcrumb": breadcrumbList
+  };
+}
+
+/**
+ * Generates Schema.org structured data for the Contact page
+ */
+export function generateContactPageSchema() {
+  const baseUrl = "https://cavcount.app";
+
+  const breadcrumbList = {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Contact",
+        "item": `${baseUrl}/contact`
+      }
+    ]
+  };
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "url": `${baseUrl}/contact`,
+    "name": "Contact Cavcount",
+    "description": "Get in touch with the Cavcount team",
+    "breadcrumb": breadcrumbList
   };
 }

@@ -6,13 +6,6 @@ import { Heart, Facebook } from "lucide-react";
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
-  // Function to handle Facebook click - temporary placeholder
-  const handleFacebookClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    // Will be configured later to navigate to the actual Facebook page
-    console.log("Facebook link clicked");
-  };
-
   // Add Buy Me A Coffee script
   useEffect(() => {
     // Create script element for Buy Me A Coffee
@@ -76,8 +69,8 @@ export function Footer() {
         </div>
         <div className="flex items-center">
           <nav className="flex items-center gap-4 text-sm font-medium">
-            <button
-              href="https://www.facebook.com/Cavcount"
+            <a
+              href="https://facebook.com/Cavcount"
               className="text-muted-foreground transition-colors hover:text-foreground flex items-center"
               aria-label="Facebook"
               target="_blank"
@@ -85,7 +78,7 @@ export function Footer() {
             >
               <Facebook className="h-4 w-4" />
               <span className="sr-only">Facebook</span>
-            </button>
+            </a>
             <a
               href="https://www.buymeacoffee.com/cavcount"
               className="bmc-button text-muted-foreground transition-colors hover:text-foreground flex items-center"
