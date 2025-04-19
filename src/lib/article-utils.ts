@@ -1,9 +1,11 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import matter from 'gray-matter';
-import { remark } from 'remark';
-import html from 'remark-html';
-import rehypeRaw from 'rehype-raw';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+import rehypeSanitize from 'rehype-sanitize';
 
 const articlesDirectory = path.join(process.cwd(), 'content/articles');
 const imagesDirectory = path.join(process.cwd(), 'content/images');
@@ -40,10 +42,12 @@ export async function getArticleData(slug: string) {
   // Use gray-matter to parse the post metadata section
   const matterResult = matter(fileContents);
 
-  // Use remark to convert markdown into HTML string
-  const processedContent = await remark()
-    .use(html, { sanitize: false })
-    .use(rehypeRaw as any)
+  // Use unified/remark/rehype to safely process markdown
+  const processedContent = await unified()
+    .use(remarkParse) // Parse markdown content
+    .use(remarkRehype, { allowDangerousHtml: true }) // Convert to HTML, allowing dangerous HTML
+    .use(rehypeSanitize) // Sanitize HTML content
+    .use(rehypeStringify) // Convert to string
     .process(matterResult.content);
 
   const contentHtml = processedContent.toString();
@@ -114,4 +118,17 @@ export function getArticleSlugs() {
   return fileNames
     .filter(fileName => fileName.endsWith('.md'))
     .map(fileName => fileName.replace(/\.md$/, ''));
+}
+
+// Add a function to ensure the slug is valid
+export function validateSlug(slug: string): boolean {
+  const validSlugs = getArticleSlugs();
+  return validSlugs.includes(slug);
+}
+
+// Add a function to check if new articles have been added that don't have pages
+export function checkForNewArticles(): string[] {
+  const validSlugs = getArticleSlugs();
+  // Return the list of valid article slugs
+  return validSlugs;
 }

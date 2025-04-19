@@ -159,12 +159,18 @@ export default function RootLayout({
                 {
                   "@type": "ListItem",
                   "position": 2,
+                  "name": "Articles",
+                  "item": "https://cavcount.app/articles"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
                   "name": "Word Counter",
                   "item": "https://cavcount.app/#counter"
                 },
                 {
                   "@type": "ListItem",
-                  "position": 3,
+                  "position": 4,
                   "name": "OCR Tool",
                   "item": "https://cavcount.app/#ocr"
                 }

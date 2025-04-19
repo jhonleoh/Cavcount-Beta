@@ -19,9 +19,12 @@ export function ArticleCard({ article }: ArticleCardProps) {
     day: "numeric",
   });
 
+  // Use direct links to static pages
+  const articleUrl = `/articles/${article.slug}`;
+
   return (
     <Card className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow duration-200">
-      <Link href={`/articles/${article.slug}`} className="block h-48 relative overflow-hidden">
+      <a href={articleUrl} className="block h-48 relative overflow-hidden">
         {imageError ? (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">
             <div className="text-center px-4">
@@ -38,17 +41,17 @@ export function ArticleCard({ article }: ArticleCardProps) {
             onError={() => setImageError(true)}
           />
         )}
-      </Link>
+      </a>
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-center text-sm text-muted-foreground mb-2">
           <span>{formattedDate}</span>
           <span>{article.author}</span>
         </div>
-        <Link href={`/articles/${article.slug}`}>
+        <a href={articleUrl}>
           <CardTitle className="text-xl hover:text-primary transition-colors">
             {article.title}
           </CardTitle>
-        </Link>
+        </a>
         <CardDescription className="mt-2">
           {article.description}
         </CardDescription>

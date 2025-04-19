@@ -50,14 +50,14 @@ export function Navbar() {
 
         <div className="header-right flex items-center space-x-4">
           <nav className="nav-menu space-x-4 hidden md:block">
-            <Link
+            <a
               href="/articles"
               className={cn("hover:text-primary", {
                 "text-primary": pathname === "/articles" || pathname.startsWith("/articles/"),
               })}
             >
               Articles
-            </Link>
+            </a>
             <Link
               href="/about"
               className={cn("hover:text-primary", {
@@ -101,7 +101,7 @@ export function Navbar() {
       {isMobileMenuOpen && (
         <div className="md:hidden border-t bg-background">
           <div className="container py-3">
-            <Link
+            <a
               href="/articles"
               className={cn("block py-2 hover:text-primary", {
                 "text-primary": pathname === "/articles" || pathname.startsWith("/articles/"),
@@ -109,7 +109,7 @@ export function Navbar() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Articles
-            </Link>
+            </a>
             <Link
               href="/about"
               className={cn("block py-2 hover:text-primary", {
