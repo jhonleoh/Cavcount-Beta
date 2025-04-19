@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { ImageOff } from "lucide-react";
 
 interface ArticleImageProps {
   src: string;
@@ -11,11 +12,15 @@ interface ArticleImageProps {
 export function ArticleImage({ src, alt }: ArticleImageProps) {
   const [hasError, setHasError] = useState(false);
   const [imageSrc, setImageSrc] = useState(src);
+  const [isPlaceholder, setIsPlaceholder] = useState(false);
 
   // Reset error state if src changes
   useEffect(() => {
     setHasError(false);
     setImageSrc(src);
+
+    // Check if this is a placeholder image
+    setIsPlaceholder(src === '/placeholder.png');
   }, [src]);
 
   // Handle image errors
@@ -32,8 +37,21 @@ export function ArticleImage({ src, alt }: ArticleImageProps) {
       // Only set to placeholder if we're not already showing it
       setHasError(true);
       setImageSrc('/placeholder.png');
+      setIsPlaceholder(true);
     }
   };
+
+  // If using a placeholder, show a nice "No image available" message
+  if (isPlaceholder) {
+    return (
+      <div className="flex items-center justify-center w-full h-full bg-muted">
+        <div className="text-center flex flex-col items-center gap-4 px-4">
+          <ImageOff className="h-16 w-16 text-muted-foreground opacity-50" />
+          <p className="text-muted-foreground text-lg font-medium">No image available</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Image

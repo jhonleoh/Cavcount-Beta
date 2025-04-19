@@ -14,16 +14,14 @@ type ArticlePageProps = {
 
 // Generate dynamic metadata for the page
 export async function generateMetadata(
-  { params }: ArticlePageProps,
+  props: ArticlePageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const slug = params.slug;
-
   // Get valid article slugs
   const slugs = getArticleSlugs();
 
   // If the slug doesn't exist, return basic metadata
-  if (!slugs.includes(slug)) {
+  if (!slugs.includes(props.params.slug)) {
     return {
       title: "Article Not Found | Cavcount",
       description: "The requested article could not be found.",
@@ -31,7 +29,7 @@ export async function generateMetadata(
   }
 
   try {
-    const article = await getArticleData(slug);
+    const article = await getArticleData(props.params.slug);
 
     return {
       title: `${article.title} | Cavcount`,
@@ -66,8 +64,8 @@ export async function generateStaticParams() {
   return slugs.map(slug => ({ slug }));
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
-  const slug = params.slug;
+export default async function ArticlePage(props: ArticlePageProps) {
+  const { slug } = props.params;
 
   // Check if the requested slug exists
   if (!validateSlug(slug)) {

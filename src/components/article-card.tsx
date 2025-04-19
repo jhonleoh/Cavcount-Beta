@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { ImageOff } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ArticleMetadata } from "@/lib/article-utils";
 import { useState, useEffect } from "react";
@@ -13,11 +14,15 @@ interface ArticleCardProps {
 export function ArticleCard({ article }: ArticleCardProps) {
   const [imageError, setImageError] = useState(false);
   const [imageSrc, setImageSrc] = useState(article.image);
+  const [isPlaceholder, setIsPlaceholder] = useState(false);
 
   // Reset error state if image src changes
   useEffect(() => {
     setImageError(false);
     setImageSrc(article.image);
+
+    // Check if this is a placeholder image
+    setIsPlaceholder(article.image === '/placeholder.png');
   }, [article.image]);
 
   const formattedDate = new Date(article.date).toLocaleDateString("en-US", {
@@ -42,21 +47,31 @@ export function ArticleCard({ article }: ArticleCardProps) {
       console.log(`Using placeholder for article card: ${article.slug}`);
       setImageError(true);
       setImageSrc('/placeholder.png');
+      setIsPlaceholder(true);
     }
   };
 
   return (
     <Card className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow duration-200">
       <a href={articleUrl} className="block h-48 relative overflow-hidden">
-        <Image
-          src={imageSrc}
-          alt={article.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transform hover:scale-105 transition-transform duration-300"
-          onError={handleImageError}
-          priority={true}
-        />
+        {isPlaceholder ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-muted">
+            <div className="text-center flex flex-col items-center gap-2 px-4">
+              <ImageOff className="h-12 w-12 text-muted-foreground opacity-50" />
+              <p className="text-muted-foreground text-sm">No image available</p>
+            </div>
+          </div>
+        ) : (
+          <Image
+            src={imageSrc}
+            alt={article.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transform hover:scale-105 transition-transform duration-300"
+            onError={handleImageError}
+            priority={true}
+          />
+        )}
       </a>
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-center text-sm text-muted-foreground mb-2">

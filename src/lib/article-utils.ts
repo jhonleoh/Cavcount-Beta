@@ -28,6 +28,11 @@ function debugImagePath(imagePath: string, note = ""): void {
 
 // Improved function to check if an image exists at the specified path
 function imageExists(imagePath: string): boolean {
+  // If no image path is provided, return false immediately
+  if (!imagePath) {
+    return false;
+  }
+
   try {
     // For absolute URLs, always return true (we can't check if they exist on the server)
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
@@ -79,21 +84,26 @@ export async function getArticleData(slug: string) {
 
   const contentHtml = processedContent.toString();
 
-  // Get the image path from frontmatter
-  let imageUrl = matterResult.data.image as string;
+  // Get the image path from frontmatter, or set to null if missing
+  let imageUrl = matterResult.data.image as string || null;
 
-  // In Next.js when using static exports, public images need to be referenced without '/public'
-  // If the image path starts with "/public/", remove it
-  if (imageUrl?.startsWith('/public/')) {
-    imageUrl = imageUrl.replace('/public/', '/');
-  }
-
-  // Keep the original image URL as we've confirmed images exist in the right places
-  // Only use placeholder if absolutely necessary
-
-  if (!imageExists(imageUrl)) {
-    console.warn(`Image not found for article ${slug}, using placeholder. Path: ${imageUrl}`);
+  // Check if image tag exists, if not use placeholder
+  if (!imageUrl) {
+    console.log(`No image tag found for article ${slug}, showing 'No image available'`);
     imageUrl = '/placeholder.png';
+  } else {
+    // In Next.js when using static exports, public images need to be referenced without '/public'
+    // If the image path starts with "/public/", remove it
+    if (imageUrl.startsWith('/public/')) {
+      imageUrl = imageUrl.replace('/public/', '/');
+    }
+
+    // Keep the original image URL as we've confirmed images exist in the right places
+    // Only use placeholder if absolutely necessary
+    if (!imageExists(imageUrl)) {
+      console.warn(`Image not found for article ${slug}, using placeholder. Path: ${imageUrl}`);
+      imageUrl = '/placeholder.png';
+    }
   }
 
   // Combine the data with the slug and contentHtml
@@ -122,19 +132,25 @@ export function getAllArticles(): ArticleMetadata[] {
       // Use gray-matter to parse the post metadata section
       const matterResult = matter(fileContents);
 
-      // Get the image path from frontmatter
-      let imageUrl = matterResult.data.image as string;
+      // Get the image path from frontmatter, or set to null if missing
+      let imageUrl = matterResult.data.image as string || null;
 
-      // In Next.js when using static exports, public images need to be referenced without '/public'
-      // If the image path starts with "/public/", remove it
-      if (imageUrl?.startsWith('/public/')) {
-        imageUrl = imageUrl.replace('/public/', '/');
-      }
-
-      // Only use placeholder if absolutely necessary
-      if (!imageExists(imageUrl)) {
-        console.warn(`Image not found for article list item ${slug}, using placeholder. Path: ${imageUrl}`);
+      // Check if image tag exists, if not use placeholder
+      if (!imageUrl) {
+        console.log(`No image tag found for article list item ${slug}, showing 'No image available'`);
         imageUrl = '/placeholder.png';
+      } else {
+        // In Next.js when using static exports, public images need to be referenced without '/public'
+        // If the image path starts with "/public/", remove it
+        if (imageUrl.startsWith('/public/')) {
+          imageUrl = imageUrl.replace('/public/', '/');
+        }
+
+        // Only use placeholder if absolutely necessary
+        if (!imageExists(imageUrl)) {
+          console.warn(`Image not found for article list item ${slug}, using placeholder. Path: ${imageUrl}`);
+          imageUrl = '/placeholder.png';
+        }
       }
 
       // Combine the data with the slug

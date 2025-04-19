@@ -3,6 +3,7 @@ title: "Getting Started with Cavcount"
 description: "Learn how to use Cavcount to count words and perform OCR"
 date: "2025-04-19"
 author: "Leo"
+image: "/content/images/cavcount-banner.png"
 tags: ["tutorial", "OCR", "word-counter"]
 ---
 
