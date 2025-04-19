@@ -216,8 +216,7 @@ export function WordCounter() {
           </button>
           <h3 className="text-lg font-medium mb-1">Update Announcement</h3>
           <p className="text-sm light-mode-text">
-            <span className="font-semibold">v1.1.0 Updates:</span> Improved mobile responsiveness,
-            enhanced sentence detection algorithm, more accurate reading time calculation,
+            <span className="font-semibold">v3.5 Updates:</span> New web design, Improved mobile responsiveness, add text analysis,
             and improved OCR processing.
           </p>
         </div>
