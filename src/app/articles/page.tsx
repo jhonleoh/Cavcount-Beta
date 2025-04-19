@@ -23,7 +23,7 @@ export default function ArticlesPage() {
         <div className="space-y-4 mb-8">
           <h1 className="text-3xl font-bold tracking-tight">Articles</h1>
           <p className="text-muted-foreground">
-            Read the latest articles about text analysis, OCR technology, and writing tips.
+            Read the latest articles about writing tips.
           </p>
         </div>
 
