@@ -31,8 +31,18 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   const handleImageError = () => {
     console.error(`Failed to load article card image: ${imageSrc}`);
-    setImageError(true);
-    setImageSrc('/placeholder.png');
+
+    // First try to fix the path if it contains /content/
+    if (imageSrc.startsWith('/content/')) {
+      const fixedPath = imageSrc.replace('/content/', '/');
+      console.log(`Trying alternative article card image path: ${fixedPath}`);
+      setImageSrc(fixedPath);
+    } else if (!imageSrc.startsWith('/placeholder.png')) {
+      // Only use placeholder if we're not already using it
+      console.log(`Using placeholder for article card: ${article.slug}`);
+      setImageError(true);
+      setImageSrc('/placeholder.png');
+    }
   };
 
   return (

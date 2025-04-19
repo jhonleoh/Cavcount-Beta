@@ -70,7 +70,7 @@ export function Footer() {
         <div className="flex items-center">
           <nav className="flex items-center gap-4 text-sm font-medium">
             <a
-              href="https://facebook.com/Cavcount"
+              href="https://facebook.com"
               className="text-muted-foreground transition-colors hover:text-foreground flex items-center"
               aria-label="Facebook"
               target="_blank"

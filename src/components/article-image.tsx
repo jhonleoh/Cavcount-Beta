@@ -20,14 +20,24 @@ export function ArticleImage({ src, alt }: ArticleImageProps) {
 
   // Handle image errors
   const handleImageError = () => {
-    console.error(`Failed to load image: ${src}`);
-    setHasError(true);
-    setImageSrc('/placeholder.png'); // Set to placeholder instead of showing error state
+    console.error(`Failed to load article image: ${src}`);
+
+    // Don't immediately set to placeholder - try to fix the path first
+    if (src.startsWith('/content/')) {
+      // If the image path starts with /content/, try without it
+      const newSrc = src.replace('/content/', '/');
+      console.log(`Trying alternative path: ${newSrc}`);
+      setImageSrc(newSrc);
+    } else if (!src.startsWith('/placeholder.png')) {
+      // Only set to placeholder if we're not already showing it
+      setHasError(true);
+      setImageSrc('/placeholder.png');
+    }
   };
 
   return (
     <Image
-      src={hasError ? '/placeholder.png' : imageSrc}
+      src={imageSrc}
       alt={alt}
       fill
       priority

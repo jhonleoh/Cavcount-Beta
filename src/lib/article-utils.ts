@@ -21,28 +21,41 @@ export type ArticleMetadata = {
   slug: string;
 };
 
+// Debug function to help diagnose image path issues
+function debugImagePath(imagePath: string, note = ""): void {
+  console.log(`[Image Debug] ${note} - Path: ${imagePath}`);
+}
+
 // Improved function to check if an image exists at the specified path
 function imageExists(imagePath: string): boolean {
   try {
+    // For absolute URLs, always return true (we can't check if they exist on the server)
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      debugImagePath(imagePath, "External URL - assuming it exists");
+      return true;
+    }
+
     // Remove the leading '/' if present
     const relativePath = imagePath.startsWith('/')
       ? imagePath.substring(1)
       : imagePath;
 
-    // First check if the file exists directly in public directory
+    // First check if the file exists in the public directory
     const publicPath = path.join(publicDirectory, relativePath);
     if (fs.existsSync(publicPath)) {
+      debugImagePath(publicPath, "Found in public directory");
       return true;
     }
 
-    // If image path contains 'content/images', check in content directory
-    if (relativePath.includes('content/images')) {
-      const contentPath = path.join(process.cwd(), relativePath);
-      return fs.existsSync(contentPath);
+    // Then check in the content directory
+    const contentPath = path.join(process.cwd(), relativePath);
+    if (fs.existsSync(contentPath)) {
+      debugImagePath(contentPath, "Found in content directory");
+      return true;
     }
 
-    // Last resort: Check if it's an absolute URL (starts with http:// or https://)
-    return imagePath.startsWith('http://') || imagePath.startsWith('https://');
+    debugImagePath(imagePath, "Image NOT found anywhere");
+    return false;
   } catch (error) {
     console.error('Error checking if image exists:', error);
     return false;
@@ -66,14 +79,21 @@ export async function getArticleData(slug: string) {
 
   const contentHtml = processedContent.toString();
 
-  // Check if the image exists, use a fallback if not
-  const imageUrl = matterResult.data.image as string;
-  let validatedImage = imageUrl;
+  // Get the image path from frontmatter
+  let imageUrl = matterResult.data.image as string;
+
+  // In Next.js when using static exports, public images need to be referenced without '/public'
+  // If the image path starts with "/public/", remove it
+  if (imageUrl?.startsWith('/public/')) {
+    imageUrl = imageUrl.replace('/public/', '/');
+  }
+
+  // Keep the original image URL as we've confirmed images exist in the right places
+  // Only use placeholder if absolutely necessary
 
   if (!imageExists(imageUrl)) {
-    // Use a default image if the specified image doesn't exist
-    validatedImage = '/placeholder.png';
-    console.log(`Image not found for article ${slug}, using placeholder. Path: ${imageUrl}`);
+    console.warn(`Image not found for article ${slug}, using placeholder. Path: ${imageUrl}`);
+    imageUrl = '/placeholder.png';
   }
 
   // Combine the data with the slug and contentHtml
@@ -81,7 +101,7 @@ export async function getArticleData(slug: string) {
     slug,
     contentHtml,
     ...matterResult.data,
-    image: validatedImage,
+    image: imageUrl,
   };
 }
 
@@ -102,21 +122,26 @@ export function getAllArticles(): ArticleMetadata[] {
       // Use gray-matter to parse the post metadata section
       const matterResult = matter(fileContents);
 
-      // Check if the image exists, use a fallback if not
-      const imageUrl = matterResult.data.image as string;
-      let validatedImage = imageUrl;
+      // Get the image path from frontmatter
+      let imageUrl = matterResult.data.image as string;
 
+      // In Next.js when using static exports, public images need to be referenced without '/public'
+      // If the image path starts with "/public/", remove it
+      if (imageUrl?.startsWith('/public/')) {
+        imageUrl = imageUrl.replace('/public/', '/');
+      }
+
+      // Only use placeholder if absolutely necessary
       if (!imageExists(imageUrl)) {
-        // Use a default image if the specified image doesn't exist
-        validatedImage = '/placeholder.png';
-        console.log(`Image not found for article list item ${slug}, using placeholder. Path: ${imageUrl}`);
+        console.warn(`Image not found for article list item ${slug}, using placeholder. Path: ${imageUrl}`);
+        imageUrl = '/placeholder.png';
       }
 
       // Combine the data with the slug
       return {
         slug,
         ...matterResult.data,
-        image: validatedImage,
+        image: imageUrl,
       };
     });
 
