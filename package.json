@@ -1,7 +1,7 @@
 {
   "name": "cavcount",
-  "version": "1.0.0",
-  "description": "CavCount - Modern Word & Sentence Counter with OCR capabilities",
+  "version": "3.5",
+  "description": "CavCount - Free Word, Sentence & Paragraph Counter with Image-to-Text OCR",
   "author": "Leo via Same",
   "private": true,
   "scripts": {

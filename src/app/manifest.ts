@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'CavCount - Word & Sentence Counter',
     short_name: 'CavCount',
-    description: 'Modern word and sentence counter with OCR capabilities',
+    description: 'Free Word, Sentence & Paragraph Counter with Image-to-Text OCR',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

@@ -65,7 +65,7 @@ export const metadata: Metadata = {
         url: "https://cavcount.app/og-image.png", // You'll need to create this image
         width: 1200,
         height: 630,
-        alt: "CavCount - Modern Word Counter with OCR",
+        alt: "CavCount - Word Counter with OCR",
       }
     ],
   },
@@ -103,7 +103,7 @@ export default function RootLayout({
         <script src="/tesseract-config.js" defer />
         <meta
           name="description"
-          content="CavCount - Modern Word & Sentence Counter with OCR capabilities"
+          content="CavCount - Free Word, Sentence & Paragraph Counter with Image-to-Text OCR"
         />
         <meta
           httpEquiv="Content-Security-Policy"
