@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
 import { getAllArticles } from "@/lib/article-utils";
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { Metadata } from "next";
-=======
 import { ArticleCard } from "@/components/article-card";
 import { generateArticlesListSchema } from "@/lib/schema-utils";
 import Script from "next/script";
->>>>>>> parent of 6980e83 (update)
-=======
-import { ArticleCard } from "@/components/article-card";
-import { generateArticlesListSchema } from "@/lib/schema-utils";
-import Script from "next/script";
->>>>>>> parent of 6980e83 (update)
 
 export const metadata: Metadata = {
   title: "Articles | Cavcount",
@@ -21,20 +11,6 @@ export const metadata: Metadata = {
 
 export default function ArticlesPage() {
   const articles = getAllArticles();
-<<<<<<< HEAD
-
-  return (
-    <div className="container py-8">
-      <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Articles</h1>
-      <p className="text-muted-foreground mb-8 max-w-3xl">
-        Read our latest articles about text analysis, OCR technology, and writing tips.
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {articles.map((article) => (
-          <ArticleCard key={article.slug} article={article} />
-        ))}
-=======
   const schema = generateArticlesListSchema(articles);
 
   return (
@@ -63,11 +39,7 @@ export default function ArticlesPage() {
             ))}
           </div>
         )}
-<<<<<<< HEAD
->>>>>>> parent of 6980e83 (update)
-=======
->>>>>>> parent of 6980e83 (update)
       </div>
-    </div>
+    </>
   );
 }

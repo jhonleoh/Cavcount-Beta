@@ -1,35 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Geist as GeistSans } from "next/font/google";
-import { Geist_Mono as GeistMono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "sonner";
-=======
 import { AppClientLayout } from "@/components/app-client-layout";
->>>>>>> parent of 6980e83 (update)
-=======
-import { AppClientLayout } from "@/components/app-client-layout";
->>>>>>> parent of 6980e83 (update)
 import Script from "next/script";
 
-const geistSans = GeistSans({
+const geistSans = Geist({
   variable: "--font-geist-sans",
-  weight: "400",
   subsets: ["latin"],
 });
 
-const geistMono = GeistMono({
+const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  weight: "400",
   subsets: ["latin"],
 });
 
-// Define metadata for the site
+// Define the viewport separately as recommended by Next.js
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "hsl(220, 20%, 97%)" },
+    { media: "(prefers-color-scheme: dark)", color: "hsl(224, 71.4%, 4.1%)" },
+  ],
+};
+
 export const metadata: Metadata = {
-<<<<<<< HEAD
-=======
   title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
   description:
     "Instantly count words, sentences, and characters from any text or image. CavCount's free OCR tool accurately extracts text from photos and screenshots with advanced sentence detection.",
@@ -42,7 +38,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
->>>>>>> parent of 6980e83 (update)
   metadataBase: new URL("https://cavcount.app"),
   alternates: {
     canonical: "/",
@@ -50,11 +45,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-<<<<<<< HEAD
-    "max-image-preview": "large",
-    "max-video-preview": -1,
-    "max-snippet": -1,
-=======
     googleBot: {
       index: true,
       follow: true,
@@ -62,43 +52,14 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
       'max-snippet': -1,
     },
->>>>>>> parent of 6980e83 (update)
   },
-  generator: "Next.js",
-  applicationName: "Cavcount",
-  title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
-  description:
-    "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
-  url: "https://cavcount.app",
-  category: "productivity",
-  creator: "Cavcount Team",
-  keywords: [
-    "word counter",
-    "sentence counter",
-    "character counter",
-    "OCR",
-    "text extraction",
-    "image to text",
-    "free OCR tool",
-    "reading time calculator",
-  ],
   openGraph: {
-    type: "website",
-    url: "https://cavcount.app",
     title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    description:
-      "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
-    siteName: "Cavcount",
-=======
-=======
->>>>>>> parent of 6980e83 (update)
     description: "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
     url: "https://cavcount.app",
     siteName: "CavCount",
->>>>>>> parent of 6980e83 (update)
     locale: "en_US",
+    type: "website",
     images: [
       {
         url: "https://cavcount.app/og-image.png", // You'll need to create this image
@@ -115,18 +76,16 @@ export const metadata: Metadata = {
     creator: "@cavcount",
     images: ["https://cavcount.app/twitter-image.png"], // You'll need to create this image
   },
-};
-
-// Define viewport settings
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  minimumScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
-  ],
-  colorScheme: "light dark",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/apple-touch-icon-precomposed.png",
+    },
+  },
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -146,31 +105,12 @@ export default function RootLayout({
           name="description"
           content="CavCount - Free Word, Sentence & Paragraph Counter with Image-to-Text OCR"
         />
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <Script id="google-analytics-config">
-          {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-JZKYHEXVZQ');
-        `}
-        </Script>
-
-        <Script id="sitelinks-searchbox-schema" type="application/ld+json">
-=======
-=======
->>>>>>> parent of 6980e83 (update)
         <meta
           httpEquiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline';"
         />
         {/* Structured Data for Google Search */}
         <Script id="structured-data" type="application/ld+json">
-<<<<<<< HEAD
->>>>>>> parent of 6980e83 (update)
-=======
->>>>>>> parent of 6980e83 (update)
           {`
             {
               "@context": "https://schema.org",
