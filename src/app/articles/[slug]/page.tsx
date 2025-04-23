@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { getArticleData, getArticleSlugs, validateSlug } from "@/lib/article-utils";
 import { ArticleImage } from "@/components/article-image";
 import { ArrowLeft } from "lucide-react";
-import Script from "next/script";
 import { generateArticleSchema } from "@/lib/schema-utils";
+import { ArticleJsonLd } from "next-seo";
 
 type ArticlePageProps = {
   params: {
@@ -83,11 +83,25 @@ export default async function ArticlePage(props: ArticlePageProps) {
     day: "numeric",
   });
 
+  const baseUrl = "https://cavcount.app";
+  const articleUrl = `${baseUrl}/articles/${article.slug}`;
+  const imageUrl = article.image.startsWith('http') ? article.image : `${baseUrl}${article.image}`;
+
   return (
     <>
-      <Script id="article-schema" type="application/ld+json">
-        {JSON.stringify(schema)}
-      </Script>
+      <ArticleJsonLd
+        type="BlogPosting"
+        url={articleUrl}
+        title={article.title}
+        images={[imageUrl]}
+        datePublished={article.date}
+        dateModified={article.date}
+        authorName={article.author}
+        description={article.description}
+        publisherName="Cavcount"
+        publisherLogo={`${baseUrl}/icon.png`}
+        isAccessibleForFree={true}
+      />
 
       <div className="container py-8">
         <div className="mb-8">

@@ -22,30 +22,7 @@ export function generateArticleSchema(article: ArticleMetadata & { contentHtml: 
     ? article.image
     : `${baseUrl}${article.image}`;
 
-  // Generate proper breadcrumb list for structured data
-  const breadcrumbList = {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": baseUrl
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Articles",
-        "item": `${baseUrl}/articles`
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": article.title,
-        "item": `${baseUrl}/articles/${article.slug}`
-      }
-    ]
-  };
+  // Removed breadcrumb list as requested
 
   return {
     "@context": "https://schema.org",
@@ -73,8 +50,8 @@ export function generateArticleSchema(article: ArticleMetadata & { contentHtml: 
     },
     "wordCount": wordCount,
     "timeRequired": `PT${readingTime}M`,
-    "keywords": article.tags.join(", "),
-    "breadcrumb": breadcrumbList
+    "keywords": article.tags.join(", ")
+    // Removed breadcrumb property
   };
 }
 
@@ -85,24 +62,7 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
   // Base URL for the site
   const baseUrl = "https://cavcount.app";
 
-  // Generate breadcrumb list for the articles page
-  const breadcrumbList = {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": baseUrl
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Articles",
-        "item": `${baseUrl}/articles`
-      }
-    ]
-  };
+  // Removed breadcrumb list as requested
 
   const itemListElements = articles.map((article, index) => ({
     "@type": "ListItem",
@@ -131,8 +91,8 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
       "@id": `${baseUrl}/articles`,
       "name": "Articles | Cavcount",
       "description": "Read the latest articles about text analysis, OCR technology, and writing tips."
-    },
-    "breadcrumb": breadcrumbList
+    }
+    // Removed breadcrumb property
   };
 }
 
@@ -142,18 +102,7 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
 export function generateHomePageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  // Home page only has itself in the breadcrumb
-  const breadcrumbList = {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": baseUrl
-      }
-    ]
-  };
+  // Removed home page breadcrumb list as requested
 
   return {
     "@context": "https://schema.org",
@@ -168,8 +117,8 @@ export function generateHomePageSchema() {
         "urlTemplate": `${baseUrl}/search?q={search_term_string}`
       },
       "query-input": "required name=search_term_string"
-    },
-    "breadcrumb": breadcrumbList
+    }
+    // Removed breadcrumb property
   };
 }
 
@@ -179,31 +128,15 @@ export function generateHomePageSchema() {
 export function generateAboutPageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  const breadcrumbList = {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": baseUrl
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "About",
-        "item": `${baseUrl}/about`
-      }
-    ]
-  };
+  // Removed about page breadcrumb list as requested
 
   return {
     "@context": "https://schema.org",
     "@type": "AboutPage",
     "url": `${baseUrl}/about`,
     "name": "About Cavcount",
-    "description": "Learn about Cavcount's mission, features, and the team behind the text analysis tools",
-    "breadcrumb": breadcrumbList
+    "description": "Learn about Cavcount's mission, features, and the team behind the text analysis tools"
+    // Removed breadcrumb property
   };
 }
 
@@ -213,31 +146,15 @@ export function generateAboutPageSchema() {
 export function generatePrivacyPageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  const breadcrumbList = {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": baseUrl
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Privacy Policy",
-        "item": `${baseUrl}/privacy`
-      }
-    ]
-  };
+  // Removed privacy page breadcrumb list as requested
 
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "url": `${baseUrl}/privacy`,
     "name": "Privacy Policy | Cavcount",
-    "description": "Cavcount's privacy policy and data protection information",
-    "breadcrumb": breadcrumbList
+    "description": "Cavcount's privacy policy and data protection information"
+    // Removed breadcrumb property
   };
 }
 
@@ -247,30 +164,14 @@ export function generatePrivacyPageSchema() {
 export function generateContactPageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  const breadcrumbList = {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": baseUrl
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Contact",
-        "item": `${baseUrl}/contact`
-      }
-    ]
-  };
+  // Removed contact page breadcrumb list as requested
 
   return {
     "@context": "https://schema.org",
     "@type": "ContactPage",
     "url": `${baseUrl}/contact`,
     "name": "Contact Cavcount",
-    "description": "Get in touch with the Cavcount team",
-    "breadcrumb": breadcrumbList
+    "description": "Get in touch with the Cavcount team"
+    // Removed breadcrumb property
   };
 }
