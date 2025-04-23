@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 import { getArticleData, getArticleSlugs, validateSlug } from "@/lib/article-utils";
 import { ArticleImage } from "@/components/article-image";
 import { ArrowLeft } from "lucide-react";
-import { generateArticleSchema } from "@/lib/schema-utils";
-import { ArticleJsonLd } from "next-seo";
 
 type ArticlePageProps = {
   params: {
@@ -74,7 +72,6 @@ export default async function ArticlePage(props: ArticlePageProps) {
 
   // Get article data
   const article = await getArticleData(slug);
-  const schema = generateArticleSchema(article);
 
   // Format the date
   const formattedDate = new Date(article.date).toLocaleDateString("en-US", {
@@ -83,69 +80,49 @@ export default async function ArticlePage(props: ArticlePageProps) {
     day: "numeric",
   });
 
-  const baseUrl = "https://cavcount.app";
-  const articleUrl = `${baseUrl}/articles/${article.slug}`;
-  const imageUrl = article.image.startsWith('http') ? article.image : `${baseUrl}${article.image}`;
-
   return (
-    <>
-      <ArticleJsonLd
-        type="BlogPosting"
-        url={articleUrl}
-        title={article.title}
-        images={[imageUrl]}
-        datePublished={article.date}
-        dateModified={article.date}
-        authorName={article.author}
-        description={article.description}
-        publisherName="Cavcount"
-        publisherLogo={`${baseUrl}/icon.png`}
-        isAccessibleForFree={true}
-      />
-
-      <div className="container py-8">
-        <div className="mb-8">
-          <a
-            href="/articles"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Articles
-          </a>
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">{article.title}</h1>
-            <div className="flex items-center justify-between text-sm text-muted-foreground mb-6">
-              <span>{formattedDate}</span>
-              <span>{article.author}</span>
-            </div>
-          </div>
-
-          <div className="relative w-full h-[300px] md:h-[400px] mb-8 rounded-lg overflow-hidden bg-muted">
-            <ArticleImage
-              src={article.image}
-              alt={article.title}
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-2 mb-8">
-            {article.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1.5 text-sm rounded-full bg-muted text-muted-foreground"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <article className="prose prose-blue dark:prose-invert max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
-          </article>
-        </div>
+    <div className="container py-8">
+      <div className="mb-8">
+        <a
+          href="/articles"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Articles
+        </a>
       </div>
-    </>
+
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">{article.title}</h1>
+          <div className="flex items-center justify-between text-sm text-muted-foreground mb-6">
+            <span>{formattedDate}</span>
+            <span>{article.author}</span>
+          </div>
+        </div>
+
+        <div className="relative w-full h-[300px] md:h-[400px] mb-8 rounded-lg overflow-hidden bg-muted">
+          <ArticleImage
+            src={article.image}
+            alt={article.title}
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2 mb-8">
+          {article.tags.map((tag) => (
+            <span
+              key={tag}
+              className="px-3 py-1.5 text-sm rounded-full bg-muted text-muted-foreground"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <article className="prose prose-blue dark:prose-invert max-w-none">
+          <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
+        </article>
+      </div>
+    </div>
   );
 }
