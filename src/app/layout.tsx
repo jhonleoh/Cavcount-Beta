@@ -2,8 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Geist as GeistSans } from "next/font/google";
 import { Geist_Mono as GeistMono } from "next/font/google";
 import "./globals.css";
+<<<<<<< HEAD
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
+=======
+import { AppClientLayout } from "@/components/app-client-layout";
+>>>>>>> parent of 6980e83 (update)
 import Script from "next/script";
 
 const geistSans = GeistSans({
@@ -20,6 +24,21 @@ const geistMono = GeistMono({
 
 // Define metadata for the site
 export const metadata: Metadata = {
+<<<<<<< HEAD
+=======
+  title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
+  description:
+    "Instantly count words, sentences, and characters from any text or image. CavCount's free OCR tool accurately extracts text from photos and screenshots with advanced sentence detection.",
+  keywords: "word counter, sentence counter, character counter, OCR, text extraction, image to text, free OCR tool, reading time calculator",
+  authors: [{ name: "Cavcount Team", url: "https://cavcount.app" }],
+  creator: "Cavcount",
+  publisher: "Cavcount",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+>>>>>>> parent of 6980e83 (update)
   metadataBase: new URL("https://cavcount.app"),
   alternates: {
     canonical: "/",
@@ -27,9 +46,19 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+<<<<<<< HEAD
     "max-image-preview": "large",
     "max-video-preview": -1,
     "max-snippet": -1,
+=======
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+      'max-snippet': -1,
+    },
+>>>>>>> parent of 6980e83 (update)
   },
   generator: "Next.js",
   applicationName: "Cavcount",
@@ -53,26 +82,31 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://cavcount.app",
     title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
+<<<<<<< HEAD
     description:
       "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
     siteName: "Cavcount",
+=======
+    description: "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
+    url: "https://cavcount.app",
+    siteName: "CavCount",
+>>>>>>> parent of 6980e83 (update)
     locale: "en_US",
     images: [
       {
-        url: "https://cavcount.app/og-image.png",
+        url: "https://cavcount.app/og-image.png", // You'll need to create this image
         width: 1200,
         height: 630,
         alt: "CavCount - Word Counter with OCR",
-      },
+      }
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "CavCount - OCR Word & Sentence Counter",
-    description:
-      "Instantly count words, sentences, and characters from any text or image with OCR",
+    description: "Instantly count words, sentences, and characters from any text or image with OCR",
     creator: "@cavcount",
-    images: ["https://cavcount.app/twitter-image.png"],
+    images: ["https://cavcount.app/twitter-image.png"], // You'll need to create this image
   },
 };
 
@@ -90,17 +124,22 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
-        <Script
-          id="google-analytics"
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-JZKYHEXVZQ"
+        <script src="/tesseract-config.js" defer />
+        <meta
+          name="description"
+          content="CavCount - Free Word, Sentence & Paragraph Counter with Image-to-Text OCR"
         />
+<<<<<<< HEAD
         <Script id="google-analytics-config">
           {`
           window.dataLayer = window.dataLayer || [];
@@ -111,20 +150,39 @@ export default function RootLayout({
         </Script>
 
         <Script id="sitelinks-searchbox-schema" type="application/ld+json">
+=======
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline';"
+        />
+        {/* Structured Data for Google Search */}
+        <Script id="structured-data" type="application/ld+json">
+>>>>>>> parent of 6980e83 (update)
           {`
             {
               "@context": "https://schema.org",
-              "@type": "WebSite",
-              "url": "https://cavcount.app/",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": {
-                  "@type": "EntryPoint",
-                  "urlTemplate": "https://cavcount.app/search?q={search_term_string}"
-                },
-                "query-input": "required name=search_term_string"
+              "@type": "WebApplication",
+              "name": "CavCount",
+              "url": "https://cavcount.app",
+              "description": "A free word counting and text analysis tool with OCR capabilities",
+              "applicationCategory": "Utility",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
               },
-              "publisher": {
+              "operatingSystem": "Any",
+              "browserRequirements": "Requires JavaScript",
+              "featureList": [
+                "Word counting",
+                "Sentence counting",
+                "Character counting",
+                "OCR text extraction",
+                "Reading time calculation",
+                "Paragraph counting"
+              ],
+              "screenshot": "https://cavcount.app/screenshot.png",
+              "creator": {
                 "@type": "Organization",
                 "name": "Cavcount",
                 "sameAs": "https://www.facebook.com/cavcount"
@@ -132,17 +190,44 @@ export default function RootLayout({
             }
           `}
         </Script>
+        {/* Additional schema for BreadcrumbList */}
+        <Script id="breadcrumb-schema" type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://cavcount.app"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Articles",
+                  "item": "https://cavcount.app/articles"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Word Counter",
+                  "item": "https://cavcount.app/#counter"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 4,
+                  "name": "OCR Tool",
+                  "item": "https://cavcount.app/#ocr"
+                }
+              ]
+            }
+          `}
+        </Script>
       </head>
-      <body className="min-h-screen font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster position="bottom-right" closeButton />
-        </ThemeProvider>
+      <body className="antialiased">
+        <AppClientLayout>{children}</AppClientLayout>
       </body>
     </html>
   );
