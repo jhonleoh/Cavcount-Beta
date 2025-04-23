@@ -10,13 +10,15 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
-  const schema = generatePrivacyPageSchema();
+  const schemas = generatePrivacyPageSchema();
 
   return (
     <>
-      <Script id="privacy-schema" type="application/ld+json">
-        {JSON.stringify(schema)}
-      </Script>
+      {schemas.map((schema, index) => (
+        <Script key={`privacy-schema-${index}`} id={`privacy-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
+      ))}
 
       <div className="container py-8">
         <div className="mx-auto max-w-3xl">

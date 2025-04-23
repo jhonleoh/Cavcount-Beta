@@ -3,13 +3,15 @@ import { generateHomePageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
 
 export default function Home() {
-  const schema = generateHomePageSchema();
+  const schemas = generateHomePageSchema();
 
   return (
     <>
-      <Script id="home-schema" type="application/ld+json">
-        {JSON.stringify(schema)}
-      </Script>
+      {schemas.map((schema, index) => (
+        <Script key={`home-schema-${index}`} id={`home-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
+      ))}
       <WordCounter />
     </>
   );

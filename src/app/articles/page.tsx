@@ -11,13 +11,15 @@ export const metadata: Metadata = {
 
 export default function ArticlesPage() {
   const articles = getAllArticles();
-  const schema = generateArticlesListSchema(articles);
+  const schemas = generateArticlesListSchema(articles);
 
   return (
     <>
-      <Script id="article-list-schema" type="application/ld+json">
-        {JSON.stringify(schema)}
-      </Script>
+      {schemas.map((schema, index) => (
+        <Script key={`article-list-schema-${index}`} id={`article-list-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
+      ))}
 
       <div className="container py-8">
         <div className="space-y-4 mb-8">

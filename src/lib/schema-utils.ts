@@ -22,8 +22,9 @@ export function generateArticleSchema(article: ArticleMetadata & { contentHtml: 
     ? article.image
     : `${baseUrl}${article.image}`;
 
-  // Generate proper breadcrumb list for structured data
-  const breadcrumbList = {
+  // Generate breadcrumb schema for the article
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       {
@@ -47,7 +48,8 @@ export function generateArticleSchema(article: ArticleMetadata & { contentHtml: 
     ]
   };
 
-  return {
+  // Create article schema
+  const articleSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": article.title,
@@ -73,9 +75,11 @@ export function generateArticleSchema(article: ArticleMetadata & { contentHtml: 
     },
     "wordCount": wordCount,
     "timeRequired": `PT${readingTime}M`,
-    "keywords": article.tags.join(", "),
-    "breadcrumb": breadcrumbList
+    "keywords": article.tags.join(", ")
   };
+
+  // Return array of schemas
+  return [articleSchema, breadcrumbSchema];
 }
 
 /**
@@ -85,8 +89,9 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
   // Base URL for the site
   const baseUrl = "https://cavcount.app";
 
-  // Generate breadcrumb list for the articles page
-  const breadcrumbList = {
+  // Generate breadcrumb schema for the articles page
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       {
@@ -121,7 +126,8 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
     }
   }));
 
-  return {
+  // Create article list schema
+  const articleListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "itemListElement": itemListElements,
@@ -131,9 +137,11 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
       "@id": `${baseUrl}/articles`,
       "name": "Articles | Cavcount",
       "description": "Read the latest articles about text analysis, OCR technology, and writing tips."
-    },
-    "breadcrumb": breadcrumbList
+    }
   };
+
+  // Return array of schemas
+  return [articleListSchema, breadcrumbSchema];
 }
 
 /**
@@ -142,8 +150,9 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
 export function generateHomePageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  // Home page only has itself in the breadcrumb
-  const breadcrumbList = {
+  // Create breadcrumb schema for the home page
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       {
@@ -155,7 +164,8 @@ export function generateHomePageSchema() {
     ]
   };
 
-  return {
+  // Create website schema (without breadcrumb)
+  const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "url": baseUrl,
@@ -167,10 +177,16 @@ export function generateHomePageSchema() {
         "@type": "EntryPoint",
         "urlTemplate": `${baseUrl}/search?q={search_term_string}`
       },
-      "query-input": "required name=search_term_string"
-    },
-    "breadcrumb": breadcrumbList
+      "query-input": {
+        "@type": "PropertyValueSpecification",
+        "valueRequired": "http://schema.org/True",
+        "valueName": "search_term_string"
+      }
+    }
   };
+
+  // Return array of schemas
+  return [websiteSchema, breadcrumbSchema];
 }
 
 /**
@@ -179,7 +195,9 @@ export function generateHomePageSchema() {
 export function generateAboutPageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  const breadcrumbList = {
+  // Create breadcrumb schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       {
@@ -197,14 +215,17 @@ export function generateAboutPageSchema() {
     ]
   };
 
-  return {
+  // Create about page schema
+  const aboutPageSchema = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
     "url": `${baseUrl}/about`,
     "name": "About Cavcount",
-    "description": "Learn about Cavcount's mission, features, and the team behind the text analysis tools",
-    "breadcrumb": breadcrumbList
+    "description": "Learn about Cavcount's mission, features, and the team behind the text analysis tools"
   };
+
+  // Return array of schemas
+  return [aboutPageSchema, breadcrumbSchema];
 }
 
 /**
@@ -213,7 +234,9 @@ export function generateAboutPageSchema() {
 export function generatePrivacyPageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  const breadcrumbList = {
+  // Create breadcrumb schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       {
@@ -231,14 +254,17 @@ export function generatePrivacyPageSchema() {
     ]
   };
 
-  return {
+  // Create privacy page schema
+  const privacyPageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "url": `${baseUrl}/privacy`,
     "name": "Privacy Policy | Cavcount",
-    "description": "Cavcount's privacy policy and data protection information",
-    "breadcrumb": breadcrumbList
+    "description": "Cavcount's privacy policy and data protection information"
   };
+
+  // Return array of schemas
+  return [privacyPageSchema, breadcrumbSchema];
 }
 
 /**
@@ -247,7 +273,9 @@ export function generatePrivacyPageSchema() {
 export function generateContactPageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  const breadcrumbList = {
+  // Create breadcrumb schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       {
@@ -265,12 +293,15 @@ export function generateContactPageSchema() {
     ]
   };
 
-  return {
+  // Create contact page schema
+  const contactPageSchema = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
     "url": `${baseUrl}/contact`,
     "name": "Contact Cavcount",
-    "description": "Get in touch with the Cavcount team",
-    "breadcrumb": breadcrumbList
+    "description": "Get in touch with the Cavcount team"
   };
+
+  // Return array of schemas
+  return [contactPageSchema, breadcrumbSchema];
 }

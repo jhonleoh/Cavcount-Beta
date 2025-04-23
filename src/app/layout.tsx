@@ -143,7 +143,7 @@ export default function RootLayout({
             }
           `}
         </Script>
-        {/* Additional schema for BreadcrumbList */}
+        {/* Main navigation breadcrumb schema */}
         <Script id="breadcrumb-schema" type="application/ld+json">
           {`
             {
@@ -161,18 +161,6 @@ export default function RootLayout({
                   "position": 2,
                   "name": "Articles",
                   "item": "https://cavcount.app/articles"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 3,
-                  "name": "Word Counter",
-                  "item": "https://cavcount.app/#counter"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 4,
-                  "name": "OCR Tool",
-                  "item": "https://cavcount.app/#ocr"
                 }
               ]
             }

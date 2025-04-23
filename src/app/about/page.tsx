@@ -9,13 +9,15 @@ export const metadata = {
 }
 
 export default function AboutPage() {
-  const schema = generateAboutPageSchema();
+  const schemas = generateAboutPageSchema();
 
   return (
     <>
-      <Script id="about-schema" type="application/ld+json">
-        {JSON.stringify(schema)}
-      </Script>
+      {schemas.map((schema, index) => (
+        <Script key={`about-schema-${index}`} id={`about-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
+      ))}
 
       <div className="container py-8">
         <div className="mx-auto max-w-3xl">

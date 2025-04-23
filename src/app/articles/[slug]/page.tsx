@@ -4,13 +4,14 @@ import { getArticleData, getArticleSlugs, validateSlug } from "@/lib/article-uti
 import { ArticleImage } from "@/components/article-image";
 import { ArrowLeft } from "lucide-react";
 import Script from "next/script";
-import { generateArticleSchema } from "@/lib/schema-utils";
 
 type ArticlePageProps = {
   params: {
     slug: string;
   };
 };
+
+import { generateArticleSchema } from "@/lib/schema-utils";
 
 // Generate dynamic metadata for the page
 export async function generateMetadata(
@@ -74,7 +75,8 @@ export default async function ArticlePage(props: ArticlePageProps) {
 
   // Get article data
   const article = await getArticleData(slug);
-  const schema = generateArticleSchema(article);
+  // generateArticleSchema now returns an array of schemas
+  const schemas = generateArticleSchema(article);
 
   // Format the date
   const formattedDate = new Date(article.date).toLocaleDateString("en-US", {
@@ -85,9 +87,11 @@ export default async function ArticlePage(props: ArticlePageProps) {
 
   return (
     <>
-      <Script id="article-schema" type="application/ld+json">
-        {JSON.stringify(schema)}
-      </Script>
+      {schemas.map((schema, index) => (
+        <Script key={index} id={`article-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
+      ))}
 
       <div className="container py-8">
         <div className="mb-8">

@@ -9,13 +9,15 @@ export const metadata: Metadata = {
 }
 
 export default function ContactPage() {
-  const schema = generateContactPageSchema();
+  const schemas = generateContactPageSchema();
 
   return (
     <>
-      <Script id="contact-schema" type="application/ld+json">
-        {JSON.stringify(schema)}
-      </Script>
+      {schemas.map((schema, index) => (
+        <Script key={`contact-schema-${index}`} id={`contact-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
+      ))}
 
       <div className="container py-8">
         <div className="mx-auto max-w-2xl">
