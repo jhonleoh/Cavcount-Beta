@@ -1,11 +1,17 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Metadata } from "next";
 import { ContactForm } from "@/components/contact-form";
 =======
+=======
+>>>>>>> parent of 6980e83 (update)
 import type { Metadata } from "next"
 import { ContactForm } from "@/components/contact-form"
 import { generateContactPageSchema } from "@/lib/schema-utils"
 import Script from "next/script"
+<<<<<<< HEAD
+>>>>>>> parent of 6980e83 (update)
+=======
 >>>>>>> parent of 6980e83 (update)
 
 export const metadata: Metadata = {
@@ -17,6 +23,7 @@ export default function ContactPage() {
   const schema = generateContactPageSchema();
 
   return (
+<<<<<<< HEAD
 <<<<<<< HEAD
     <div className="container py-8">
       <div className="max-w-3xl mx-auto">
@@ -46,6 +53,24 @@ export default function ContactPage() {
       </div>
     </div>
   );
+=======
+    <>
+      <Script id="contact-schema" type="application/ld+json">
+        {JSON.stringify(schema)}
+      </Script>
+
+      <div className="container py-8">
+        <div className="mx-auto max-w-2xl">
+          <div className="mb-8 text-center">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight">Contact Us</h1>
+          </div>
+
+          <ContactForm />
+        </div>
+      </div>
+    </>
+  )
+>>>>>>> parent of 6980e83 (update)
 =======
     <>
       <Script id="contact-schema" type="application/ld+json">

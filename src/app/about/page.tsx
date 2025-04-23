@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Metadata } from "next";
 import { TeamMember } from "@/components/team-member";
 import { FaCode } from "react-icons/fa";
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
   description: "Learn about Cavcount's mission, features, and the team behind the text analysis tools",
 };
 =======
+=======
+>>>>>>> parent of 6980e83 (update)
 import { Card } from "@/components/ui/card"
 import { TeamMember } from "@/components/team-member"
 import { generateAboutPageSchema } from "@/lib/schema-utils";
@@ -17,6 +20,9 @@ export const metadata = {
   title: "About Us - CavCount",
   description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo."
 }
+<<<<<<< HEAD
+>>>>>>> parent of 6980e83 (update)
+=======
 >>>>>>> parent of 6980e83 (update)
 
 export default function AboutPage() {
@@ -144,5 +150,8 @@ export default function AboutPage() {
       </div>
     </>
   )
+<<<<<<< HEAD
+>>>>>>> parent of 6980e83 (update)
+=======
 >>>>>>> parent of 6980e83 (update)
 }

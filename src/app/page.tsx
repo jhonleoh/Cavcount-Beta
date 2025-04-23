@@ -1,5 +1,6 @@
 import { WordCounter } from "@/components/word-counter";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,11 +8,14 @@ export const metadata: Metadata = {
   description: "Count words and extract text from images with Cavcount's tools"
 };
 =======
+=======
+>>>>>>> parent of 6980e83 (update)
 import { generateHomePageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
 
 export default function Home() {
   const schema = generateHomePageSchema();
+<<<<<<< HEAD
 >>>>>>> parent of 6980e83 (update)
 
   return (
@@ -34,6 +38,10 @@ export default function Home() {
       </div>
     </div>
 =======
+=======
+
+  return (
+>>>>>>> parent of 6980e83 (update)
     <>
       <Script id="home-schema" type="application/ld+json">
         {JSON.stringify(schema)}

@@ -3,8 +3,12 @@ import { Geist as GeistSans } from "next/font/google";
 import { Geist_Mono as GeistMono } from "next/font/google";
 import "./globals.css";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
+=======
+import { AppClientLayout } from "@/components/app-client-layout";
+>>>>>>> parent of 6980e83 (update)
 =======
 import { AppClientLayout } from "@/components/app-client-layout";
 >>>>>>> parent of 6980e83 (update)
@@ -83,10 +87,13 @@ export const metadata: Metadata = {
     url: "https://cavcount.app",
     title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
 <<<<<<< HEAD
+<<<<<<< HEAD
     description:
       "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
     siteName: "Cavcount",
 =======
+=======
+>>>>>>> parent of 6980e83 (update)
     description: "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
     url: "https://cavcount.app",
     siteName: "CavCount",
@@ -140,6 +147,7 @@ export default function RootLayout({
           content="CavCount - Free Word, Sentence & Paragraph Counter with Image-to-Text OCR"
         />
 <<<<<<< HEAD
+<<<<<<< HEAD
         <Script id="google-analytics-config">
           {`
           window.dataLayer = window.dataLayer || [];
@@ -151,12 +159,17 @@ export default function RootLayout({
 
         <Script id="sitelinks-searchbox-schema" type="application/ld+json">
 =======
+=======
+>>>>>>> parent of 6980e83 (update)
         <meta
           httpEquiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline';"
         />
         {/* Structured Data for Google Search */}
         <Script id="structured-data" type="application/ld+json">
+<<<<<<< HEAD
+>>>>>>> parent of 6980e83 (update)
+=======
 >>>>>>> parent of 6980e83 (update)
           {`
             {

@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { getAllArticles } from "@/lib/article-utils";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Metadata } from "next";
+=======
+import { ArticleCard } from "@/components/article-card";
+import { generateArticlesListSchema } from "@/lib/schema-utils";
+import Script from "next/script";
+>>>>>>> parent of 6980e83 (update)
 =======
 import { ArticleCard } from "@/components/article-card";
 import { generateArticlesListSchema } from "@/lib/schema-utils";
@@ -57,6 +63,9 @@ export default function ArticlesPage() {
             ))}
           </div>
         )}
+<<<<<<< HEAD
+>>>>>>> parent of 6980e83 (update)
+=======
 >>>>>>> parent of 6980e83 (update)
       </div>
     </div>

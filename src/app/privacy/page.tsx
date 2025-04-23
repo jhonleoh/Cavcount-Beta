@@ -1,11 +1,17 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Metadata } from "next";
 =======
+=======
+>>>>>>> parent of 6980e83 (update)
 import type { Metadata } from "next";
 import { generatePrivacyPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
 import { Card } from "@/components/ui/card"
 import Link from "next/link";
+<<<<<<< HEAD
+>>>>>>> parent of 6980e83 (update)
+=======
 >>>>>>> parent of 6980e83 (update)
 
 export const metadata: Metadata = {
@@ -147,6 +153,9 @@ export default function PrivacyPage() {
               </section>
             </div>
           </Card>
+<<<<<<< HEAD
+>>>>>>> parent of 6980e83 (update)
+=======
 >>>>>>> parent of 6980e83 (update)
         </div>
       </div>

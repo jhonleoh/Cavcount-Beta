@@ -4,6 +4,11 @@ import { getArticleData, getArticleSlugs, validateSlug } from "@/lib/article-uti
 import { ArticleImage } from "@/components/article-image";
 import { ArrowLeft } from "lucide-react";
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import Script from "next/script";
+import { generateArticleSchema } from "@/lib/schema-utils";
+>>>>>>> parent of 6980e83 (update)
 =======
 import Script from "next/script";
 import { generateArticleSchema } from "@/lib/schema-utils";
