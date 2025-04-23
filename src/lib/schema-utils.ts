@@ -170,7 +170,7 @@ export function generateHomePageSchema() {
     "@type": "WebSite",
     "url": baseUrl,
     "name": "Cavcount",
-    "description": "Count words and extract text from images with Cavcount's tools",
+    "description": "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {

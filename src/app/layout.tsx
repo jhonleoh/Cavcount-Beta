@@ -28,8 +28,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
   description:
-    "Instantly count words, sentences, and characters from any text or image. CavCount's free OCR tool accurately extracts text from photos and screenshots with advanced sentence detection.",
-  keywords: "word counter, sentence counter, character counter, OCR, text extraction, image to text, free OCR tool, reading time calculator",
+    "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
+  keywords:
+    "word counter, sentence counter, character counter, OCR, text extraction, image to text, free OCR tool, reading time calculator",
   authors: [{ name: "Cavcount Team", url: "https://cavcount.app" }],
   creator: "Cavcount",
   publisher: "Cavcount",
@@ -48,33 +49,35 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-image-preview': 'large',
-      'max-video-preview': -1,
-      'max-snippet': -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      "max-snippet": -1,
     },
   },
   openGraph: {
     title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
-    description: "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
+    description:
+      "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
     url: "https://cavcount.app",
     siteName: "CavCount",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://cavcount.app/og-image.png", // You'll need to create this image
+        url: "https://cavcount.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "CavCount - Word Counter with OCR",
-      }
+      },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "CavCount - OCR Word & Sentence Counter",
-    description: "Instantly count words, sentences, and characters from any text or image with OCR",
+    description:
+      "Instantly count words, sentences, and characters from any text or image with OCR",
     creator: "@cavcount",
-    images: ["https://cavcount.app/twitter-image.png"], // You'll need to create this image
+    images: ["https://cavcount.app/twitter-image.png"],
   },
   icons: {
     icon: "/favicon.ico",
@@ -103,7 +106,7 @@ export default function RootLayout({
         <script src="/tesseract-config.js" defer />
         <meta
           name="description"
-          content="CavCount - Free Word, Sentence & Paragraph Counter with Image-to-Text OCR"
+          content="Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly."
         />
         <meta
           httpEquiv="Content-Security-Policy"
@@ -117,7 +120,7 @@ export default function RootLayout({
               "@type": "WebApplication",
               "name": "CavCount",
               "url": "https://cavcount.app",
-              "description": "A free word counting and text analysis tool with OCR capabilities",
+              "description": "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
               "applicationCategory": "Utility",
               "offers": {
                 "@type": "Offer",
