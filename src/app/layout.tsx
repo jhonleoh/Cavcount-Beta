@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "CavCount - OCR Word & Sentence Counter",
+    title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
     description:
       "Instantly count words, sentences, and characters from any text or image with OCR",
     creator: "@cavcount",
@@ -105,69 +105,61 @@ export default function RootLayout({
       <head>
         <script src="/tesseract-config.js" defer />
         <meta
-          name="description"
-          content="Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly."
-        />
-        <meta
           httpEquiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline';"
         />
         {/* Structured Data for Google Search */}
         <Script id="structured-data" type="application/ld+json">
-          {`
-            {
-              "@context": "https://schema.org",
-              "@type": "WebApplication",
-              "name": "CavCount",
-              "url": "https://cavcount.app",
-              "description": "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
-              "applicationCategory": "Utility",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-              },
-              "operatingSystem": "Any",
-              "browserRequirements": "Requires JavaScript",
-              "featureList": [
-                "Word counting",
-                "Sentence counting",
-                "Character counting",
-                "OCR text extraction",
-                "Reading time calculation",
-                "Paragraph counting"
-              ],
-              "screenshot": "https://cavcount.app/screenshot.png",
-              "creator": {
-                "@type": "Organization",
-                "name": "Cavcount",
-                "sameAs": "https://www.facebook.com/cavcount"
-              }
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "CavCount",
+            "url": "https://cavcount.app",
+            "description": "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
+            "applicationCategory": "Utility",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "featureList": [
+              "Word counting",
+              "Sentence counting",
+              "Character counting",
+              "OCR text extraction",
+              "Reading time calculation",
+              "Paragraph counting"
+            ],
+            "screenshot": "https://cavcount.app/screenshot.png",
+            "creator": {
+              "@type": "Organization",
+              "name": "Cavcount",
+              "sameAs": "https://www.facebook.com/cavcount"
             }
-          `}
+          })}
         </Script>
         {/* Main navigation breadcrumb schema */}
         <Script id="breadcrumb-schema" type="application/ld+json">
-          {`
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Home",
-                  "item": "https://cavcount.app"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Articles",
-                  "item": "https://cavcount.app/articles"
-                }
-              ]
-            }
-          `}
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://cavcount.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Articles",
+                "item": "https://cavcount.app/articles"
+              }
+            ]
+          })}
         </Script>
       </head>
       <body className="antialiased">

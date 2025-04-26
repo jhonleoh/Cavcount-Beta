@@ -4,9 +4,9 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'CavCount - Word & Sentence Counter',
+    name: 'CavCount - OCR Word & Sentence Counter | Free Image to Text Tool',
     short_name: 'CavCount',
-    description: 'Free Word, Sentence & Paragraph Counter with Image-to-Text OCR',
+    description: 'Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

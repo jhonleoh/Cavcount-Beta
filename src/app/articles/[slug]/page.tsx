@@ -4,6 +4,7 @@ import { getArticleData, getArticleSlugs, validateSlug } from "@/lib/article-uti
 import { ArticleImage } from "@/components/article-image";
 import { ArrowLeft } from "lucide-react";
 import Script from "next/script";
+import { createOpenGraphMetadata, createTwitterMetadata } from "@/lib/utils";
 
 type ArticlePageProps = {
   params: {
@@ -31,24 +32,34 @@ export async function generateMetadata(
 
   try {
     const article = await getArticleData(props.params.slug);
+    const baseUrl = "https://cavcount.app";
+    const articleUrl = `${baseUrl}/articles/${props.params.slug}`;
+
+    // Create consistent OpenGraph and Twitter metadata
+    const openGraph = createOpenGraphMetadata({
+      title: article.title,
+      description: article.description,
+      url: articleUrl,
+      type: 'article',
+      images: article.image,
+      publishedTime: article.date,
+      authors: [article.author],
+      tags: article.tags,
+    });
+
+    const twitter = createTwitterMetadata({
+      title: article.title,
+      description: article.description,
+      images: article.image,
+    });
 
     return {
       title: `${article.title} | Cavcount`,
       description: article.description,
-      openGraph: {
-        title: article.title,
-        description: article.description,
-        images: [article.image],
-        type: 'article',
-        publishedTime: article.date,
-        authors: [article.author],
-        tags: article.tags,
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: article.title,
-        description: article.description,
-        images: [article.image],
+      openGraph,
+      twitter,
+      alternates: {
+        canonical: `/articles/${props.params.slug}`,
       }
     };
   } catch (error) {

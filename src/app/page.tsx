@@ -8,7 +8,11 @@ export default function Home() {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script key={`home-schema-${index}`} id={`home-schema-${index}`} type="application/ld+json">
+        <Script
+          key={`home-schema-${index}`}
+          id={`home-schema-${index}`}
+          type="application/ld+json"
+        >
           {JSON.stringify(schema)}
         </Script>
       ))}

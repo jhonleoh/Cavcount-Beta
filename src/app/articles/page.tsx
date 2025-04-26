@@ -3,10 +3,25 @@ import { getAllArticles } from "@/lib/article-utils";
 import { ArticleCard } from "@/components/article-card";
 import { generateArticlesListSchema } from "@/lib/schema-utils";
 import Script from "next/script";
+import { createOpenGraphMetadata, createTwitterMetadata } from "@/lib/utils";
 
+// Create consistent metadata for the articles page
 export const metadata: Metadata = {
   title: "Articles | Cavcount",
   description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
+  openGraph: createOpenGraphMetadata({
+    title: "Articles | Cavcount",
+    description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
+    url: "https://cavcount.app/articles",
+    type: "website"
+  }),
+  twitter: createTwitterMetadata({
+    title: "Articles | Cavcount",
+    description: "Read the latest articles about text analysis, OCR technology, and writing tips."
+  }),
+  alternates: {
+    canonical: "/articles"
+  }
 };
 
 export default function ArticlesPage() {
@@ -16,9 +31,12 @@ export default function ArticlesPage() {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script key={`article-list-schema-${index}`} id={`article-list-schema-${index}`} type="application/ld+json">
-          {JSON.stringify(schema)}
-        </Script>
+        <Script
+          key={`article-list-schema-${index}`}
+          id={`article-list-schema-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
       ))}
 
       <div className="container py-8">

@@ -1,12 +1,25 @@
 import type { Metadata } from "next";
 import { generatePrivacyPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import { Card } from "@/components/ui/card"
+import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { createOpenGraphMetadata, createTwitterMetadata } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - CavCount",
-  description: "CavCount's privacy policy and data protection information",
+  title: "Privacy Policy | Cavcount",
+  description: "Cavcount's privacy policy and data protection information",
+  openGraph: createOpenGraphMetadata({
+    title: "Privacy Policy | Cavcount",
+    description: "Cavcount's privacy policy and data protection information",
+    url: "https://cavcount.app/privacy",
+  }),
+  twitter: createTwitterMetadata({
+    title: "Privacy Policy | Cavcount",
+    description: "Cavcount's privacy policy and data protection information",
+  }),
+  alternates: {
+    canonical: "/privacy"
+  }
 };
 
 export default function PrivacyPage() {
@@ -33,14 +46,14 @@ export default function PrivacyPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
                 <p className="text-lg">
-                  At CavCount, we respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website (regardless of where you visit it from) and tell you about your privacy rights and how the law protects you.
+                  At Cavcount, we respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website (regardless of where you visit it from) and tell you about your privacy rights and how the law protects you.
                 </p>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold mb-4">Data We Collect</h2>
                 <p className="text-lg">
-                  CavCount does not store any texts that you input or images that you upload for OCR processing. All processing happens in your browser, and data is not sent to our servers. We collect minimal usage analytics to improve our service, but this does not include your actual content.
+                  Cavcount does not store any texts that you input or images that you upload for OCR processing. All processing happens in your browser, and data is not sent to our servers. We collect minimal usage analytics to improve our service, but this does not include your actual content.
                 </p>
               </section>
 
@@ -54,7 +67,7 @@ export default function PrivacyPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4">Third-Party Services</h2>
                 <p className="text-lg">
-                  CavCount uses the following third-party services:
+                  Cavcount uses the following third-party services:
                 </p>
                 <ul className="list-disc ml-6 mt-2 text-lg">
                   <li>Hosting services (Netlify)</li>
