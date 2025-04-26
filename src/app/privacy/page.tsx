@@ -1,42 +1,12 @@
 import type { Metadata } from "next";
 import { generatePrivacyPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ui/card"
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Cavcount's privacy policy and data protection information",
-  openGraph: {
-    title: "Privacy Policy | Cavcount",
-    description: "Cavcount's privacy policy and data protection information",
-    url: "https://cavcount.app/privacy",
-    siteName: "Cavcount",
-    locale: "en_US",
-    type: "website",
-    images: [
-      {
-        url: "https://cavcount.app/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Cavcount Privacy Policy",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Privacy Policy | Cavcount",
-    description: "Cavcount's privacy policy and data protection information",
-    images: [
-      {
-        url: "https://cavcount.app/twitter-image.png",
-        alt: "Cavcount Privacy Policy",
-      },
-    ],
-  },
-  alternates: {
-    canonical: "/privacy",
-  },
+  title: "Privacy Policy - CavCount",
+  description: "CavCount's privacy policy and data protection information",
 };
 
 export default function PrivacyPage() {
@@ -45,12 +15,9 @@ export default function PrivacyPage() {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script
-          key={`privacy-schema-${index}`}
-          id={`privacy-schema-${index}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <Script key={`privacy-schema-${index}`} id={`privacy-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
       ))}
 
       <div className="container py-8">
@@ -60,20 +27,20 @@ export default function PrivacyPage() {
           </div>
 
           <Card className="p-6">
-            <p className="mb-6">Last Updated: {new Date().toISOString().split("T")[0]}</p>
+            <p className="mb-6">Last Updated: {new Date().toISOString().split('T')[0]}</p>
 
             <div className="space-y-6">
               <section>
                 <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
                 <p className="text-lg">
-                  At Cavcount, we respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website (regardless of where you visit it from) and tell you about your privacy rights and how the law protects you.
+                  At CavCount, we respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website (regardless of where you visit it from) and tell you about your privacy rights and how the law protects you.
                 </p>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold mb-4">Data We Collect</h2>
                 <p className="text-lg">
-                  Cavcount does not store any texts that you input or images that you upload for OCR processing. All processing happens in your browser, and data is not sent to our servers. We collect minimal usage analytics to improve our service, but this does not include your actual content.
+                  CavCount does not store any texts that you input or images that you upload for OCR processing. All processing happens in your browser, and data is not sent to our servers. We collect minimal usage analytics to improve our service, but this does not include your actual content.
                 </p>
               </section>
 
@@ -86,7 +53,9 @@ export default function PrivacyPage() {
 
               <section>
                 <h2 className="text-2xl font-semibold mb-4">Third-Party Services</h2>
-                <p className="text-lg">Cavcount uses the following third-party services:</p>
+                <p className="text-lg">
+                  CavCount uses the following third-party services:
+                </p>
                 <ul className="list-disc ml-6 mt-2 text-lg">
                   <li>Hosting services (Netlify)</li>
                   <li>Analytics tools (to understand how users interact with our site)</li>
@@ -95,7 +64,9 @@ export default function PrivacyPage() {
 
               <section>
                 <h2 className="text-2xl font-semibold mb-4">Your Rights</h2>
-                <p className="text-lg">Under data protection laws, you have rights including:</p>
+                <p className="text-lg">
+                  Under data protection laws, you have rights including:
+                </p>
                 <ul className="list-disc ml-6 mt-2 text-lg">
                   <li>Your right of access</li>
                   <li>Your right to rectification</li>

@@ -2,41 +2,10 @@ import { Card } from "@/components/ui/card"
 import { TeamMember } from "@/components/team-member"
 import { generateAboutPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
-  openGraph: {
-    title: "About Us | Cavcount",
-    description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
-    url: "https://cavcount.app/about",
-    siteName: "Cavcount",
-    locale: "en_US",
-    type: "website",
-    images: [
-      {
-        url: "https://cavcount.app/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "About Cavcount",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "About Us | Cavcount",
-    description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
-    images: [
-      {
-        url: "https://cavcount.app/twitter-image.png",
-        alt: "About Cavcount",
-      },
-    ],
-  },
-  alternates: {
-    canonical: "/about"
-  }
+export const metadata = {
+  title: "About Us - CavCount",
+  description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo."
 }
 
 export default function AboutPage() {
@@ -45,12 +14,9 @@ export default function AboutPage() {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script
-          key={`about-schema-${index}`}
-          id={`about-schema-${index}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <Script key={`about-schema-${index}`} id={`about-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
       ))}
 
       <div className="container py-8">

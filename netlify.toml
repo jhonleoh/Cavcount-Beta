@@ -1,16 +1,8 @@
 [build]
-  # Directory to change to before starting a build.
-  # This is where we will look for package.json/.nvmrc/etc.
-  base = "/"
-
-  # Directory that contains the deploy-ready static files after build
+  command = "bun install --legacy-peer-deps && bun run build"
   publish = "out"
 
-  # Default build command.
-  command = "bun install --legacy-peer-deps && npm run generate-metadata && bun run build"
-
 [build.environment]
-  # Disable Netlify Next.js plugin
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   NODE_VERSION = "18"
   NEXT_TELEMETRY_DISABLED = "1"
@@ -22,49 +14,12 @@
   SKIP_ESLINT_CHECK = "true"
   SKIP_TYPE_CHECK = "true"
 
-# Explicitly define custom headers for specific files
 [[headers]]
-  for = "/*.html"
+  for = "/*"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-
-[[headers]]
-  for = "/about.html"
-  [headers.values]
-    Content-Type = "text/html; charset=utf-8"
+    Content-Security-Policy = "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; style-src * 'unsafe-inline'; font-src * 'unsafe-inline';"
     X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-
-[[headers]]
-  for = "/contact.html"
-  [headers.values]
-    Content-Type = "text/html; charset=utf-8"
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-
-[[headers]]
-  for = "/privacy.html"
-  [headers.values]
-    Content-Type = "text/html; charset=utf-8"
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-
-[[headers]]
-  for = "/articles.html"
-  [headers.values]
-    Content-Type = "text/html; charset=utf-8"
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-
-[[headers]]
-  for = "/first-article.html"
-  [headers.values]
-    Content-Type = "text/html; charset=utf-8"
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+    X-XSS-Protection = "1; mode=block"
 
 [images]
   remote_images = [

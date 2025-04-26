@@ -150,7 +150,21 @@ export function generateArticlesListSchema(articles: ArticleMetadata[]) {
 export function generateHomePageSchema() {
   const baseUrl = "https://cavcount.app";
 
-  // Create WebSite schema
+  // Create breadcrumb schema for the home page
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      }
+    ]
+  };
+
+  // Create website schema (without breadcrumb)
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -171,39 +185,8 @@ export function generateHomePageSchema() {
     }
   };
 
-  // Create Web Application schema
-  const webAppSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Cavcount",
-    "url": "https://cavcount.app",
-    "description": "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
-    "applicationCategory": "Utility",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "operatingSystem": "Any",
-    "browserRequirements": "Requires JavaScript",
-    "featureList": [
-      "Word counting",
-      "Sentence counting",
-      "Character counting",
-      "OCR text extraction",
-      "Reading time calculation",
-      "Paragraph counting"
-    ],
-    "screenshot": "https://cavcount.app/screenshot.png",
-    "creator": {
-      "@type": "Organization",
-      "name": "Cavcount",
-      "sameAs": "https://www.facebook.com/cavcount"
-    }
-  };
-
   // Return array of schemas
-  return [websiteSchema, webAppSchema];
+  return [websiteSchema, breadcrumbSchema];
 }
 
 /**

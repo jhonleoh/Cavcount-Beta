@@ -24,58 +24,36 @@ export async function generateMetadata(
   // If the slug doesn't exist, return basic metadata
   if (!slugs.includes(props.params.slug)) {
     return {
-      title: "Article Not Found",
+      title: "Article Not Found | Cavcount",
       description: "The requested article could not be found.",
     };
   }
 
   try {
     const article = await getArticleData(props.params.slug);
-    const baseUrl = "https://cavcount.app";
-    const articleUrl = `${baseUrl}/articles/${props.params.slug}`;
-    const imageUrl = article.image.startsWith('http')
-      ? article.image
-      : `${baseUrl}${article.image}`;
 
     return {
-      title: article.title,
+      title: `${article.title} | Cavcount`,
       description: article.description,
       openGraph: {
         title: article.title,
         description: article.description,
-        url: articleUrl,
-        siteName: "Cavcount",
-        locale: "en_US",
-        type: "article",
+        images: [article.image],
+        type: 'article',
         publishedTime: article.date,
         authors: [article.author],
-        images: [
-          {
-            url: imageUrl,
-            width: 1200,
-            height: 630,
-            alt: article.title,
-          },
-        ],
+        tags: article.tags,
       },
       twitter: {
-        card: "summary_large_image",
+        card: 'summary_large_image',
         title: article.title,
         description: article.description,
-        images: [
-          {
-            url: imageUrl,
-            alt: article.title,
-          },
-        ],
-      },
-      alternates: {
-        canonical: `/articles/${props.params.slug}`,
+        images: [article.image],
       }
     };
   } catch (error) {
     return {
-      title: "Article",
+      title: "Article | Cavcount",
       description: "Cavcount article page",
     };
   }
@@ -110,12 +88,9 @@ export default async function ArticlePage(props: ArticlePageProps) {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script
-          key={`article-schema-${index}`}
-          id={`article-schema-${index}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <Script key={index} id={`article-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
       ))}
 
       <div className="container py-8">

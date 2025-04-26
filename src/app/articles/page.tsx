@@ -4,40 +4,9 @@ import { ArticleCard } from "@/components/article-card";
 import { generateArticlesListSchema } from "@/lib/schema-utils";
 import Script from "next/script";
 
-// Create consistent metadata for the articles page
 export const metadata: Metadata = {
-  title: "Articles",
+  title: "Articles | Cavcount",
   description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
-  openGraph: {
-    title: "Articles | Cavcount",
-    description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
-    url: "https://cavcount.app/articles",
-    siteName: "Cavcount",
-    locale: "en_US",
-    type: "website",
-    images: [
-      {
-        url: "https://cavcount.app/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Cavcount Articles",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Articles | Cavcount",
-    description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
-    images: [
-      {
-        url: "https://cavcount.app/twitter-image.png",
-        alt: "Cavcount Articles",
-      },
-    ],
-  },
-  alternates: {
-    canonical: "/articles"
-  }
 };
 
 export default function ArticlesPage() {
@@ -47,12 +16,9 @@ export default function ArticlesPage() {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script
-          key={`article-list-schema-${index}`}
-          id={`article-list-schema-${index}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <Script key={`article-list-schema-${index}`} id={`article-list-schema-${index}`} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </Script>
       ))}
 
       <div className="container py-8">
