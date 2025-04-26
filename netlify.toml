@@ -1,8 +1,16 @@
 [build]
-  command = "bun install --legacy-peer-deps && bun run build"
+  # Directory to change to before starting a build.
+  # This is where we will look for package.json/.nvmrc/etc.
+  base = "/"
+
+  # Directory that contains the deploy-ready static files after build
   publish = "out"
 
+  # Default build command.
+  command = "bun install --legacy-peer-deps && npm run generate-metadata && bun run build"
+
 [build.environment]
+  # Disable Netlify Next.js plugin
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   NODE_VERSION = "18"
   NEXT_TELEMETRY_DISABLED = "1"
@@ -13,6 +21,9 @@
   NODE_OPTIONS = "--max-old-space-size=4096"
   SKIP_ESLINT_CHECK = "true"
   SKIP_TYPE_CHECK = "true"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [[headers]]
   for = "/*"
