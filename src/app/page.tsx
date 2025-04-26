@@ -7,14 +7,14 @@ export default function Home() {
 
   return (
     <>
+      {/* Render each schema separately to ensure proper parsing */}
       {schemas.map((schema, index) => (
         <Script
           key={`home-schema-${index}`}
           id={`home-schema-${index}`}
           type="application/ld+json"
-        >
-          {JSON.stringify(schema)}
-        </Script>
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
       ))}
       <WordCounter />
     </>

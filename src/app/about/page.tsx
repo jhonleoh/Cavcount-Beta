@@ -27,10 +27,14 @@ export default function AboutPage() {
 
   return (
     <>
+      {/* Render each schema separately for better parsing */}
       {schemas.map((schema, index) => (
-        <Script key={`about-schema-${index}`} id={`about-schema-${index}`} type="application/ld+json">
-          {JSON.stringify(schema)}
-        </Script>
+        <Script
+          key={`about-schema-${index}`}
+          id={`about-schema-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
       ))}
 
       <div className="container py-8">

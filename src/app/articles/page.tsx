@@ -30,6 +30,7 @@ export default function ArticlesPage() {
 
   return (
     <>
+      {/* Render each schema separately for better parsing */}
       {schemas.map((schema, index) => (
         <Script
           key={`article-list-schema-${index}`}

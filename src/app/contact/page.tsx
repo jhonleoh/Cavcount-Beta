@@ -26,10 +26,14 @@ export default function ContactPage() {
 
   return (
     <>
+      {/* Render each schema separately for better parsing */}
       {schemas.map((schema, index) => (
-        <Script key={`contact-schema-${index}`} id={`contact-schema-${index}`} type="application/ld+json">
-          {JSON.stringify(schema)}
-        </Script>
+        <Script
+          key={`contact-schema-${index}`}
+          id={`contact-schema-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
       ))}
 
       <div className="container py-8">
