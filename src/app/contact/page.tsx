@@ -2,10 +2,9 @@ import type { Metadata } from "next"
 import { ContactForm } from "@/components/contact-form"
 import { generateContactPageSchema } from "@/lib/schema-utils"
 import Script from "next/script"
-import { createTwitterMetadata } from "@/lib/utils"
 
 export const metadata: Metadata = {
-  title: "Contact Us | Cavcount",
+  title: "Contact Us",
   description: "Contact Cavcount. Get in touch with us for questions, support, or feedback about our free OCR word and sentence counter.",
   openGraph: {
     title: "Contact Us | Cavcount",
@@ -23,10 +22,17 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: createTwitterMetadata({
+  twitter: {
+    card: "summary_large_image",
     title: "Contact Us | Cavcount",
     description: "Contact Cavcount. Get in touch with us for questions, support, or feedback about our free OCR word and sentence counter.",
-  }),
+    images: [
+      {
+        url: "https://cavcount.app/twitter-image.png",
+        alt: "Contact Cavcount",
+      },
+    ],
+  },
   alternates: {
     canonical: "/contact"
   }

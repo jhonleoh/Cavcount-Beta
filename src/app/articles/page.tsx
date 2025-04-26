@@ -3,11 +3,10 @@ import { getAllArticles } from "@/lib/article-utils";
 import { ArticleCard } from "@/components/article-card";
 import { generateArticlesListSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import { createTwitterMetadata } from "@/lib/utils";
 
 // Create consistent metadata for the articles page
 export const metadata: Metadata = {
-  title: "Articles | Cavcount",
+  title: "Articles",
   description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
   openGraph: {
     title: "Articles | Cavcount",
@@ -25,10 +24,17 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: createTwitterMetadata({
+  twitter: {
+    card: "summary_large_image",
     title: "Articles | Cavcount",
-    description: "Read the latest articles about text analysis, OCR technology, and writing tips."
-  }),
+    description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
+    images: [
+      {
+        url: "https://cavcount.app/twitter-image.png",
+        alt: "Cavcount Articles",
+      },
+    ],
+  },
   alternates: {
     canonical: "/articles"
   }
@@ -40,7 +46,6 @@ export default function ArticlesPage() {
 
   return (
     <>
-      {/* Render each schema separately for better parsing */}
       {schemas.map((schema, index) => (
         <Script
           key={`article-list-schema-${index}`}

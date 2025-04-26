@@ -3,10 +3,9 @@ import { generatePrivacyPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
-import { createTwitterMetadata } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Cavcount",
+  title: "Privacy Policy",
   description: "Cavcount's privacy policy and data protection information",
   openGraph: {
     title: "Privacy Policy | Cavcount",
@@ -24,13 +23,20 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: createTwitterMetadata({
+  twitter: {
+    card: "summary_large_image",
     title: "Privacy Policy | Cavcount",
     description: "Cavcount's privacy policy and data protection information",
-  }),
+    images: [
+      {
+        url: "https://cavcount.app/twitter-image.png",
+        alt: "Cavcount Privacy Policy",
+      },
+    ],
+  },
   alternates: {
-    canonical: "/privacy"
-  }
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPage() {

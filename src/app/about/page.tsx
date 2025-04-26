@@ -2,11 +2,10 @@ import { Card } from "@/components/ui/card"
 import { TeamMember } from "@/components/team-member"
 import { generateAboutPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import { createTwitterMetadata } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Us | Cavcount",
+  title: "About Us",
   description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
   openGraph: {
     title: "About Us | Cavcount",
@@ -24,10 +23,17 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: createTwitterMetadata({
+  twitter: {
+    card: "summary_large_image",
     title: "About Us | Cavcount",
     description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
-  }),
+    images: [
+      {
+        url: "https://cavcount.app/twitter-image.png",
+        alt: "About Cavcount",
+      },
+    ],
+  },
   alternates: {
     canonical: "/about"
   }
@@ -38,7 +44,6 @@ export default function AboutPage() {
 
   return (
     <>
-      {/* Render each schema separately for better parsing */}
       {schemas.map((schema, index) => (
         <Script
           key={`about-schema-${index}`}

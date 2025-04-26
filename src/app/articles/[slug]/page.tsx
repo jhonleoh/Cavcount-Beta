@@ -4,7 +4,6 @@ import { getArticleData, getArticleSlugs, validateSlug } from "@/lib/article-uti
 import { ArticleImage } from "@/components/article-image";
 import { ArrowLeft } from "lucide-react";
 import Script from "next/script";
-import { createOpenGraphMetadata, createTwitterMetadata } from "@/lib/utils";
 
 type ArticlePageProps = {
   params: {
@@ -25,7 +24,7 @@ export async function generateMetadata(
   // If the slug doesn't exist, return basic metadata
   if (!slugs.includes(props.params.slug)) {
     return {
-      title: "Article Not Found | Cavcount",
+      title: "Article Not Found",
       description: "The requested article could not be found.",
     };
   }
@@ -38,42 +37,45 @@ export async function generateMetadata(
       ? article.image
       : `${baseUrl}${article.image}`;
 
-    // Make sure OpenGraph data is thorough for Facebook sharing
-    const openGraph = {
+    return {
       title: article.title,
       description: article.description,
-      url: articleUrl,
-      siteName: "Cavcount",
-      locale: "en_US",
-      type: "article",
-      publishedTime: article.date,
-      authors: [article.author],
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: article.title,
-        },
-      ],
-    };
-
-    return {
-      title: `${article.title} | Cavcount`,
-      description: article.description,
-      openGraph,
-      twitter: createTwitterMetadata({
+      openGraph: {
         title: article.title,
         description: article.description,
-        images: imageUrl,
-      }),
+        url: articleUrl,
+        siteName: "Cavcount",
+        locale: "en_US",
+        type: "article",
+        publishedTime: article.date,
+        authors: [article.author],
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: article.title,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: article.title,
+        description: article.description,
+        images: [
+          {
+            url: imageUrl,
+            alt: article.title,
+          },
+        ],
+      },
       alternates: {
         canonical: `/articles/${props.params.slug}`,
       }
     };
   } catch (error) {
     return {
-      title: "Article | Cavcount",
+      title: "Article",
       description: "Cavcount article page",
     };
   }
@@ -107,7 +109,6 @@ export default async function ArticlePage(props: ArticlePageProps) {
 
   return (
     <>
-      {/* Render each schema separately for better parsing */}
       {schemas.map((schema, index) => (
         <Script
           key={`article-schema-${index}`}

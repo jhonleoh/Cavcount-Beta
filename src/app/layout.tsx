@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppClientLayout } from "@/components/app-client-layout";
-import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,8 +24,12 @@ export const viewport: Viewport = {
   ],
 };
 
+// Define the base metadata
 export const metadata: Metadata = {
-  title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
+  title: {
+    template: "%s | Cavcount",
+    default: "Cavcount - OCR Word & Sentence Counter | Free Image to Text Tool",
+  },
   description:
     "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
   keywords:
@@ -55,11 +58,11 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
+    title: "Cavcount - OCR Word & Sentence Counter | Free Image to Text Tool",
     description:
-      "Instantly count words, sentences, and characters from any text or image with advanced OCR technology",
+      "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool.",
     url: "https://cavcount.app",
-    siteName: "CavCount",
+    siteName: "Cavcount",
     locale: "en_US",
     type: "website",
     images: [
@@ -67,17 +70,22 @@ export const metadata: Metadata = {
         url: "https://cavcount.app/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CavCount - Word Counter with OCR",
+        alt: "Cavcount - Word Counter with OCR",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
+    title: "Cavcount - OCR Word & Sentence Counter | Free Image to Text Tool",
     description:
-      "Instantly count words, sentences, and characters from any text or image with OCR",
+      "Count words, sentences, characters, and paragraphs with our free OCR tool.",
     creator: "@cavcount",
-    images: ["https://cavcount.app/twitter-image.png"],
+    images: [
+      {
+        url: "https://cavcount.app/twitter-image.png",
+        alt: "Cavcount - Word Counter with OCR",
+      },
+    ],
   },
   icons: {
     icon: "/favicon.ico",
