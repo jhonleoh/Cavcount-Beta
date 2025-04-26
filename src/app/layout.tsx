@@ -108,16 +108,6 @@ export default function RootLayout({
           httpEquiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline';"
         />
-        {/* Explicit Facebook meta tags for better social sharing */}
-        <meta property="fb:app_id" content="cavcount" />
-        <meta property="og:title" content="CavCount - OCR Word & Sentence Counter | Free Image to Text Tool" />
-        <meta property="og:site_name" content="CavCount" />
-        <meta property="og:url" content="https://cavcount.app" />
-        <meta property="og:description" content="Instantly count words, sentences, and characters from any text or image with advanced OCR technology" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://cavcount.app/og-image.png" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
       </head>
       <body className="antialiased">
         <AppClientLayout>{children}</AppClientLayout>

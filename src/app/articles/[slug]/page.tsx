@@ -34,30 +34,39 @@ export async function generateMetadata(
     const article = await getArticleData(props.params.slug);
     const baseUrl = "https://cavcount.app";
     const articleUrl = `${baseUrl}/articles/${props.params.slug}`;
+    const imageUrl = article.image.startsWith('http')
+      ? article.image
+      : `${baseUrl}${article.image}`;
 
-    // Create consistent OpenGraph and Twitter metadata
-    const openGraph = createOpenGraphMetadata({
+    // Make sure OpenGraph data is thorough for Facebook sharing
+    const openGraph = {
       title: article.title,
       description: article.description,
       url: articleUrl,
-      type: 'article',
-      images: article.image,
+      siteName: "Cavcount",
+      locale: "en_US",
+      type: "article",
       publishedTime: article.date,
       authors: [article.author],
-      tags: article.tags,
-    });
-
-    const twitter = createTwitterMetadata({
-      title: article.title,
-      description: article.description,
-      images: article.image,
-    });
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    };
 
     return {
       title: `${article.title} | Cavcount`,
       description: article.description,
       openGraph,
-      twitter,
+      twitter: createTwitterMetadata({
+        title: article.title,
+        description: article.description,
+        images: imageUrl,
+      }),
       alternates: {
         canonical: `/articles/${props.params.slug}`,
       }

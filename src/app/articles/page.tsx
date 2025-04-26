@@ -3,18 +3,28 @@ import { getAllArticles } from "@/lib/article-utils";
 import { ArticleCard } from "@/components/article-card";
 import { generateArticlesListSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import { createOpenGraphMetadata, createTwitterMetadata } from "@/lib/utils";
+import { createTwitterMetadata } from "@/lib/utils";
 
 // Create consistent metadata for the articles page
 export const metadata: Metadata = {
   title: "Articles | Cavcount",
   description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
-  openGraph: createOpenGraphMetadata({
+  openGraph: {
     title: "Articles | Cavcount",
     description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
     url: "https://cavcount.app/articles",
-    type: "website"
-  }),
+    siteName: "Cavcount",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "https://cavcount.app/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Cavcount Articles",
+      },
+    ],
+  },
   twitter: createTwitterMetadata({
     title: "Articles | Cavcount",
     description: "Read the latest articles about text analysis, OCR technology, and writing tips."

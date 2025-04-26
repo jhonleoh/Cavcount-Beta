@@ -2,17 +2,28 @@ import { Card } from "@/components/ui/card"
 import { TeamMember } from "@/components/team-member"
 import { generateAboutPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import { createOpenGraphMetadata, createTwitterMetadata } from "@/lib/utils";
+import { createTwitterMetadata } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About Us | Cavcount",
   description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
-  openGraph: createOpenGraphMetadata({
+  openGraph: {
     title: "About Us | Cavcount",
     description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
     url: "https://cavcount.app/about",
-  }),
+    siteName: "Cavcount",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "https://cavcount.app/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "About Cavcount",
+      },
+    ],
+  },
   twitter: createTwitterMetadata({
     title: "About Us | Cavcount",
     description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
