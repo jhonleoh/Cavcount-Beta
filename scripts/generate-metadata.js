@@ -16,12 +16,71 @@ const baseUrl = 'https://cavcount.app';
 
 // Escape HTML special characters
 function escapeHtml(text) {
+  if (!text) return '';
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+// Generate HTML template for a generic page
+function generatePageHtml(options) {
+  const {
+    title,
+    description,
+    url,
+    type = 'website',
+    image = '/og-image.png',
+    canonical
+  } = options;
+
+  const escapedTitle = escapeHtml(title);
+  const escapedDescription = escapeHtml(description);
+  const fullUrl = `${baseUrl}${url}`;
+  const imageUrl = image.startsWith('http') ? image : `${baseUrl}${image}`;
+  const canonicalUrl = canonical ? `${baseUrl}${canonical}` : fullUrl;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapedTitle}</title>
+  <meta name="description" content="${escapedDescription}">
+  <link rel="canonical" href="${canonicalUrl}">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="${type}">
+  <meta property="og:url" content="${fullUrl}">
+  <meta property="og:title" content="${escapedTitle}">
+  <meta property="og:description" content="${escapedDescription}">
+  <meta property="og:image" content="${imageUrl}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Cavcount">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="${fullUrl}">
+  <meta name="twitter:title" content="${escapedTitle}">
+  <meta name="twitter:description" content="${escapedDescription}">
+  <meta name="twitter:image" content="${imageUrl}">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+</head>
+<body>
+  <h1>${escapedTitle}</h1>
+  <p>${escapedDescription}</p>
+  <p><a href="${url}">View this page</a></p>
+</body>
+</html>`;
 }
 
 // Generate HTML template for an article
@@ -31,11 +90,11 @@ function generateArticleHtml(article) {
   const escapedDescription = escapeHtml(description);
   const escapedAuthor = escapeHtml(author);
 
+  const url = `/articles/${slug}`;
+  const fullUrl = `${baseUrl}${url}`;
   const imageUrl = image && image.startsWith('http')
     ? image
     : `${baseUrl}${image || '/placeholder.png'}`;
-
-  const articleUrl = `${baseUrl}/articles/${slug}`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -44,10 +103,11 @@ function generateArticleHtml(article) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${escapedTitle} | Cavcount</title>
   <meta name="description" content="${escapedDescription}">
+  <link rel="canonical" href="${fullUrl}">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
-  <meta property="og:url" content="${articleUrl}">
+  <meta property="og:url" content="${fullUrl}">
   <meta property="og:title" content="${escapedTitle} | Cavcount">
   <meta property="og:description" content="${escapedDescription}">
   <meta property="og:image" content="${imageUrl}">
@@ -60,11 +120,11 @@ function generateArticleHtml(article) {
   ${tags.map(tag => `<meta property="article:tag" content="${escapeHtml(tag)}">`).join('\n  ')}
 
   <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="${articleUrl}">
-  <meta property="twitter:title" content="${escapedTitle} | Cavcount">
-  <meta property="twitter:description" content="${escapedDescription}">
-  <meta property="twitter:image" content="${imageUrl}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="${fullUrl}">
+  <meta name="twitter:title" content="${escapedTitle} | Cavcount">
+  <meta name="twitter:description" content="${escapedDescription}">
+  <meta name="twitter:image" content="${imageUrl}">
 
   <!-- Favicon -->
   <link rel="icon" href="/favicon.ico">
@@ -72,10 +132,7 @@ function generateArticleHtml(article) {
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
-  <!-- Redirection to app -->
-  <meta http-equiv="refresh" content="0;url=/articles/${slug}">
-
-  <!-- Structured Data / JSON-LD -->
+  <!-- Schema.org / JSON-LD -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -99,7 +156,7 @@ function generateArticleHtml(article) {
       "dateModified": "${date}",
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "${articleUrl}"
+        "@id": "${fullUrl}"
       }
     }
   </script>
@@ -107,200 +164,131 @@ function generateArticleHtml(article) {
 <body>
   <h1>${escapedTitle}</h1>
   <p>${escapedDescription}</p>
-  <p>If you are not redirected automatically, <a href="/articles/${slug}">click here</a>.</p>
+  <p><a href="${url}">View this article</a></p>
 </body>
 </html>`;
 }
 
-// Generate and save article HTML files
-function generateArticleFiles() {
+// Generate all files
+function generateFiles() {
   try {
-    // Check if content directory exists
-    if (!fs.existsSync(contentDir)) {
-      console.warn(`Content directory ${contentDir} does not exist`);
-      return;
-    }
-
-    // Get all article files
-    const files = fs.readdirSync(contentDir);
-
-    if (files.length === 0) {
-      console.warn('No article files found');
-      return;
-    }
-
-    // Process each article
-    files.forEach(file => {
-      if (!file.endsWith('.md')) return;
-
-      // Read the file
-      const fullPath = path.join(contentDir, file);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      const { data } = matter(fileContents);
-
-      // Get the slug from filename
-      const slug = file.replace(/\.md$/, '');
-
-      // Create article data
-      const articleData = {
-        ...data,
-        slug,
-      };
-
-      // Generate HTML
-      const htmlContent = generateArticleHtml(articleData);
-
-      // Write to file
-      const outputPath = path.join(publicDir, `${slug}.html`);
-      fs.writeFileSync(outputPath, htmlContent);
-
-      console.log(`Generated metadata file for ${slug}`);
-    });
+    console.log('Starting metadata generation...');
 
     // Generate main index.html
-    const indexHtml = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cavcount - OCR Word & Sentence Counter | Free Image to Text Tool</title>
-  <meta name="description" content="Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.">
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="${baseUrl}/">
-  <meta property="og:title" content="Cavcount - OCR Word & Sentence Counter | Free Image to Text Tool">
-  <meta property="og:description" content="Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool.">
-  <meta property="og:image" content="${baseUrl}/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:site_name" content="Cavcount">
-  <meta property="og:locale" content="en_US">
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="${baseUrl}/">
-  <meta property="twitter:title" content="Cavcount - OCR Word & Sentence Counter | Free Image to Text Tool">
-  <meta property="twitter:description" content="Count words, sentences, characters, and paragraphs with our free OCR tool.">
-  <meta property="twitter:image" content="${baseUrl}/twitter-image.png">
-
-  <!-- Favicon -->
-  <link rel="icon" href="/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-
-  <!-- Structured Data / JSON-LD -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Cavcount",
-      "url": "${baseUrl}",
-      "description": "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
-      "applicationCategory": "Utility",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "operatingSystem": "Any",
-      "browserRequirements": "Requires JavaScript",
-      "featureList": [
-        "Word counting",
-        "Sentence counting",
-        "Character counting",
-        "OCR text extraction",
-        "Reading time calculation",
-        "Paragraph counting"
-      ],
-      "screenshot": "${baseUrl}/screenshot.png",
-      "creator": {
-        "@type": "Organization",
-        "name": "Cavcount",
-        "url": "${baseUrl}"
-      }
-    }
-  </script>
-</head>
-<body>
-  <h1>Cavcount - OCR Word & Sentence Counter</h1>
-  <p>Free online tool to count words, sentences, and characters. Upload images for OCR text extraction.</p>
-</body>
-</html>`;
+    const indexHtml = generatePageHtml({
+      title: "Cavcount - OCR Word & Sentence Counter | Free Image to Text Tool",
+      description: "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
+      url: "/",
+      type: "website",
+      image: "/og-image.png",
+      canonical: "/"
+    });
 
     fs.writeFileSync(path.join(publicDir, 'index.html'), indexHtml);
-    console.log('Generated index metadata file');
+    console.log('Generated index.html');
 
-    // Generate articles.html
-    const articlesHtml = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Articles | Cavcount</title>
-  <meta name="description" content="Read the latest articles about text analysis, OCR technology, and writing tips from Cavcount.">
+    // Generate About page HTML
+    const aboutHtml = generatePageHtml({
+      title: "About Us | Cavcount",
+      description: "Learn about Cavcount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
+      url: "/about",
+      type: "website",
+      image: "/og-image.png",
+      canonical: "/about"
+    });
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="${baseUrl}/articles">
-  <meta property="og:title" content="Articles | Cavcount">
-  <meta property="og:description" content="Read the latest articles about text analysis, OCR technology, and writing tips from Cavcount.">
-  <meta property="og:image" content="${baseUrl}/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:site_name" content="Cavcount">
-  <meta property="og:locale" content="en_US">
+    fs.writeFileSync(path.join(publicDir, 'about.html'), aboutHtml);
+    console.log('Generated about.html');
 
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="${baseUrl}/articles">
-  <meta property="twitter:title" content="Articles | Cavcount">
-  <meta property="twitter:description" content="Read the latest articles about text analysis, OCR technology, and writing tips.">
-  <meta property="twitter:image" content="${baseUrl}/twitter-image.png">
+    // Generate Contact page HTML
+    const contactHtml = generatePageHtml({
+      title: "Contact Us | Cavcount",
+      description: "Contact Cavcount. Get in touch with us for questions, support, or feedback about our free OCR word and sentence counter.",
+      url: "/contact",
+      type: "website",
+      image: "/og-image.png",
+      canonical: "/contact"
+    });
 
-  <!-- Favicon -->
-  <link rel="icon" href="/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    fs.writeFileSync(path.join(publicDir, 'contact.html'), contactHtml);
+    console.log('Generated contact.html');
 
-  <!-- Structured Data / JSON-LD -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Articles | Cavcount",
-      "url": "${baseUrl}/articles",
-      "description": "Read the latest articles about text analysis, OCR technology, and writing tips.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "Cavcount",
-        "url": "${baseUrl}"
-      }
-    }
-  </script>
-</head>
-<body>
-  <h1>Cavcount Articles</h1>
-  <p>Read the latest articles about text analysis, OCR technology, and writing tips.</p>
-</body>
-</html>`;
+    // Generate Privacy page HTML
+    const privacyHtml = generatePageHtml({
+      title: "Privacy Policy | Cavcount",
+      description: "Cavcount's privacy policy and data protection information",
+      url: "/privacy",
+      type: "website",
+      image: "/og-image.png",
+      canonical: "/privacy"
+    });
+
+    fs.writeFileSync(path.join(publicDir, 'privacy.html'), privacyHtml);
+    console.log('Generated privacy.html');
+
+    // Generate Articles page HTML
+    const articlesHtml = generatePageHtml({
+      title: "Articles | Cavcount",
+      description: "Read the latest articles about text analysis, OCR technology, and writing tips from Cavcount.",
+      url: "/articles",
+      type: "website",
+      image: "/og-image.png",
+      canonical: "/articles"
+    });
 
     fs.writeFileSync(path.join(publicDir, 'articles.html'), articlesHtml);
-    console.log('Generated articles metadata file');
+    console.log('Generated articles.html');
 
+    // Process article files
+    if (fs.existsSync(contentDir)) {
+      const files = fs.readdirSync(contentDir);
+      console.log(`Found ${files.length} files in content/articles`);
+
+      files.forEach(file => {
+        if (!file.endsWith('.md')) return;
+
+        try {
+          // Read the file
+          const fullPath = path.join(contentDir, file);
+          const fileContents = fs.readFileSync(fullPath, 'utf8');
+          const { data } = matter(fileContents);
+
+          // Get the slug from filename
+          const slug = file.replace(/\.md$/, '');
+
+          // Create article data
+          const articleData = {
+            ...data,
+            slug,
+          };
+
+          // Generate HTML
+          const htmlContent = generateArticleHtml(articleData);
+
+          // Write to file with slug name
+          const outputPath = path.join(publicDir, `${slug}.html`);
+          fs.writeFileSync(outputPath, htmlContent);
+
+          console.log(`Generated ${slug}.html`);
+        } catch (e) {
+          console.error(`Error processing article ${file}:`, e);
+        }
+      });
+    } else {
+      console.warn(`Content directory ${contentDir} does not exist`);
+    }
+
+    console.log('All metadata files generated successfully!');
   } catch (error) {
-    console.error('Error in generateArticleFiles:', error);
+    console.error('Error generating metadata files:', error);
     throw error;
   }
 }
 
 // Main execution
 try {
-  generateArticleFiles();
-  console.log('All metadata files generated successfully!');
+  generateFiles();
 } catch (error) {
-  console.error('Error generating metadata files:', error);
+  console.error('Failed to generate metadata files:', error);
   process.exit(1);
 }
