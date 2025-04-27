@@ -3,9 +3,15 @@ const nextConfig = {
   // Configure for deployment on Netlify
   reactStrictMode: true,
 
-  // For static exports, uncomment the following line:
+  // For static exports with improved metadata support
   output: 'export',
   distDir: 'out',
+
+  // Optimize for SEO
+  generateBuildId: async () => {
+    // Use a consistent build ID for better caching
+    return 'cavcount-build'
+  },
 
   // For static exports, we need to disable image optimization
   images: {

@@ -7,31 +7,26 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Us - CavCount",
   description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
-  openGraph: {
-    title: "About Us - CavCount",
-    description: "Learn about CavCount's mission, origins, and the team behind the free word counting and OCR tools",
-    type: "website",
-    url: "https://cavcount.app/about",
-  },
-  twitter: {
-    card: "summary",
-    title: "About Us - CavCount",
-    description: "Learn about CavCount's mission, origins, and the team behind the free word counting and OCR tools",
-  },
   alternates: {
     canonical: "https://cavcount.app/about",
   },
 }
 
-export default function AboutPage() {
-  const schemas = generateAboutPageSchema();
+// Pre-generate the schema at build time
+const schemas = generateAboutPageSchema();
 
+export default function AboutPage() {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script key={`about-schema-${index}`} id={`about-schema-${index}`} type="application/ld+json">
-          {JSON.stringify(schema)}
-        </Script>
+        <Script
+          key={`about-schema-${index}`}
+          id={`about-schema-${index}`}
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          data-cfasync="false"
+        />
       ))}
 
       <div className="container py-8">

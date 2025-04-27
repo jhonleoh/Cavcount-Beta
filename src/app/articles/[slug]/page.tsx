@@ -4,14 +4,13 @@ import { getArticleData, getArticleSlugs, validateSlug } from "@/lib/article-uti
 import { ArticleImage } from "@/components/article-image";
 import { ArrowLeft } from "lucide-react";
 import Script from "next/script";
+import { generateArticleSchema } from "@/lib/schema-utils";
 
 type ArticlePageProps = {
   params: {
     slug: string;
   };
 };
-
-import { generateArticleSchema } from "@/lib/schema-utils";
 
 // Generate dynamic metadata for the page
 export async function generateMetadata(
@@ -33,7 +32,7 @@ export async function generateMetadata(
     const article = await getArticleData(props.params.slug);
 
     return {
-      title: `${article.title} | Cavcount`,
+      title: article.title,
       description: article.description,
       openGraph: {
         title: article.title,
@@ -49,6 +48,9 @@ export async function generateMetadata(
         title: article.title,
         description: article.description,
         images: [article.image],
+      },
+      alternates: {
+        canonical: `https://cavcount.app/articles/${props.params.slug}`,
       }
     };
   } catch (error) {
@@ -75,7 +77,8 @@ export default async function ArticlePage(props: ArticlePageProps) {
 
   // Get article data
   const article = await getArticleData(slug);
-  // generateArticleSchema now returns an array of schemas
+
+  // Generate article schema
   const schemas = generateArticleSchema(article);
 
   // Format the date
@@ -88,9 +91,14 @@ export default async function ArticlePage(props: ArticlePageProps) {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script key={index} id={`article-schema-${index}`} type="application/ld+json">
-          {JSON.stringify(schema)}
-        </Script>
+        <Script
+          key={`article-schema-${index}`}
+          id={`article-schema-${index}`}
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          data-cfasync="false"
+        />
       ))}
 
       <div className="container py-8">

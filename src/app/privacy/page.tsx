@@ -1,37 +1,31 @@
 import type { Metadata } from "next";
 import { generatePrivacyPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import { Card } from "@/components/ui/card"
-import Link from "next/link";
+import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Privacy Policy - CavCount",
   description: "CavCount's privacy policy and data protection information. Learn how we safeguard your privacy while using our word counting and OCR tools.",
-  openGraph: {
-    title: "Privacy Policy - CavCount",
-    description: "CavCount's privacy policy and data protection information. Learn how we safeguard your privacy.",
-    type: "website",
-    url: "https://cavcount.app/privacy",
-  },
-  twitter: {
-    card: "summary",
-    title: "Privacy Policy - CavCount",
-    description: "CavCount's privacy policy and data protection information",
-  },
   alternates: {
     canonical: "https://cavcount.app/privacy",
   },
 };
 
-export default function PrivacyPage() {
-  const schemas = generatePrivacyPageSchema();
+// Pre-generate the schema at build time
+const schemas = generatePrivacyPageSchema();
 
+export default function PrivacyPage() {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script key={`privacy-schema-${index}`} id={`privacy-schema-${index}`} type="application/ld+json">
-          {JSON.stringify(schema)}
-        </Script>
+        <Script
+          key={`privacy-schema-${index}`}
+          id={`privacy-schema-${index}`}
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          data-cfasync="false"
+        />
       ))}
 
       <div className="container py-8">

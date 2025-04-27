@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppClientLayout } from "@/components/app-client-layout";
-import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,8 +24,13 @@ export const viewport: Viewport = {
   ],
 };
 
+// Default metadata that will be inherited by all pages unless overridden
 export const metadata: Metadata = {
-  title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
+  metadataBase: new URL("https://cavcount.app"),
+  title: {
+    default: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
+    template: "%s | CavCount"
+  },
   description:
     "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
   keywords:
@@ -38,10 +42,6 @@ export const metadata: Metadata = {
     email: false,
     address: false,
     telephone: false,
-  },
-  metadataBase: new URL("https://cavcount.app"),
-  alternates: {
-    canonical: "/",
   },
   robots: {
     index: true,
@@ -89,6 +89,9 @@ export const metadata: Metadata = {
     },
   },
   category: "technology",
+  verification: {
+    google: "verification-code", // Replace with your actual verification code if needed
+  },
 };
 
 export default function RootLayout({
@@ -103,13 +106,14 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script src="/tesseract-config.js" defer />
+        {/* Script for Tesseract */}
+        <script src="/tesseract-config.js" defer data-cfasync="false" />
+
         {/* CSP header for security */}
         <meta
           httpEquiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline';"
         />
-        {/* WebApplication schema and global breadcrumb removed to fix SEO issues */}
       </head>
       <body className="antialiased">
         <AppClientLayout>{children}</AppClientLayout>

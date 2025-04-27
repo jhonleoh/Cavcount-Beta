@@ -7,32 +7,27 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "Articles | Cavcount",
   description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
-  openGraph: {
-    title: "Articles & Resources | Cavcount",
-    description: "Browse our collection of articles about text analysis, OCR technology, and writing tips.",
-    type: "website",
-    url: "https://cavcount.app/articles",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Articles & Resources | Cavcount",
-    description: "Browse our collection of articles about text analysis, OCR technology, and writing tips.",
-  },
   alternates: {
     canonical: "https://cavcount.app/articles",
   },
 };
 
-export default function ArticlesPage() {
-  const articles = getAllArticles();
-  const schemas = generateArticlesListSchema(articles);
+// Pre-generate the schema at build time
+const articles = getAllArticles();
+const schemas = generateArticlesListSchema(articles);
 
+export default function ArticlesPage() {
   return (
     <>
       {schemas.map((schema, index) => (
-        <Script key={`article-list-schema-${index}`} id={`article-list-schema-${index}`} type="application/ld+json">
-          {JSON.stringify(schema)}
-        </Script>
+        <Script
+          key={`article-list-schema-${index}`}
+          id={`article-list-schema-${index}`}
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          data-cfasync="false"
+        />
       ))}
 
       <div className="container py-8">
