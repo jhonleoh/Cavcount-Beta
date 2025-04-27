@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Simple build script that ensures proper SEO files are available
-echo "Starting enhanced build process..."
+# Build script specifically optimized for Cloudflare Pages
+echo "Starting optimized build process for Cloudflare Pages..."
 
 # Ensure dependencies are installed
 echo "Installing critters dependency for CSS optimization..."
@@ -11,26 +11,30 @@ bun add critters
 echo "Building Next.js application..."
 bun run build
 
-# Make headers file plaintext and copy to output
-echo "Making sure _headers is plaintext and copied to output..."
-echo '/*
+# Create Cloudflare Pages specific config files
+echo "Creating Cloudflare Pages configuration files..."
+
+# Create _headers file directly in output directory
+cat > out/_headers << 'EOL'
+/*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
-  Content-Security-Policy: default-src '"'"'self'"'"'; script-src '"'"'self'"'"' '"'"'unsafe-inline'"'"' '"'"'unsafe-eval'"'"' https://*; connect-src '"'"'self'"'"' https://* blob:; worker-src '"'"'self'"'"' blob: https://*; img-src '"'"'self'"'"' data: blob: https://*; style-src '"'"'self'"'"' '"'"'unsafe-inline'"'"'; font-src '"'"'self'"'"' data:;
   X-XSS-Protection: 1; mode=block
-  Cache-Control: public, max-age=3600
+EOL
 
-/sitemap.xml
-  Cache-Control: public, max-age=0
+# Create _routes.json file for Cloudflare Pages
+cat > out/_routes.json << 'EOL'
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": []
+}
+EOL
 
-/robots.txt
-  Cache-Control: public, max-age=0' > out/_headers
-
-# Copy robots.txt and sitemap.xml
+# Ensure robots.txt and sitemap.xml are copied
 echo "Copying SEO files to output directory..."
-cp -f public/robots.txt out/ 2>/dev/null || :
-cp -f public/sitemap.xml out/ 2>/dev/null || :
+cp -f public/robots.txt out/ 2>/dev/null || echo "No robots.txt found to copy"
+cp -f public/sitemap.xml out/ 2>/dev/null || echo "No sitemap.xml found to copy"
 
 echo "Build process completed successfully!"
