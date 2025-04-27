@@ -13,21 +13,8 @@ const nextConfig = {
     return 'cavcount-build'
   },
 
-  // Improved metadata handling for static exports
-  experimental: {
-    // Enable improved metadata handling
-    optimizeCss: true,
-    // Optimize for crawlers
-    optimizeServerReact: true,
-  },
-
-  // Enhance SEO with server components
-  compiler: {
-    // Remove unused code
-    removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error', 'warn'],
-    } : false,
-  },
+  // Simplified metadata handling for static exports
+  // Removed experimental features that were causing build issues
 
   // For static exports, we need to disable image optimization
   images: {

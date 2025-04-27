@@ -1,28 +1,20 @@
 #!/bin/bash
 
-# Custom build script to ensure proper metadata for SEO
-echo "Starting build process with enhanced SEO metadata handling..."
+# Custom build script to ensure proper SEO files handling
+echo "Starting enhanced build process..."
 
-# Clean previous build
-rm -rf .next out
-
-# Ensure sitemap and robots are properly handled
-echo "Ensuring SEO files are properly configured..."
+# Ensure dependencies are installed
+echo "Installing critters dependency..."
+bun add critters
 
 # Build the application
 echo "Building Next.js application..."
 bun run build
 
-# Post-processing for better SEO
-echo "Performing SEO post-processing..."
+# Ensure SEO files are copied to the output directory
+echo "Ensuring SEO files are available..."
+cp -f public/_headers out/ 2>/dev/null || :
+cp -f public/robots.txt out/ 2>/dev/null || :
+cp -f public/sitemap.xml out/ 2>/dev/null || :
 
-# Special handling for structured data
-echo "Optimizing structured data..."
-
-# Copy _headers file to ensure it's included in the build
-cp public/_headers out/
-
-# Optimize robots.txt and sitemap for SEO
-cp public/robots.txt out/
-
-echo "Build process completed with enhanced SEO!"
+echo "Build process completed successfully!"
