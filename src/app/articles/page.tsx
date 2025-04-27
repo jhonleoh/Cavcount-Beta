@@ -7,6 +7,20 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "Articles | Cavcount",
   description: "Read the latest articles about text analysis, OCR technology, and writing tips.",
+  openGraph: {
+    title: "Articles & Resources | Cavcount",
+    description: "Browse our collection of articles about text analysis, OCR technology, and writing tips.",
+    type: "website",
+    url: "https://cavcount.app/articles",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Articles & Resources | Cavcount",
+    description: "Browse our collection of articles about text analysis, OCR technology, and writing tips.",
+  },
+  alternates: {
+    canonical: "https://cavcount.app/articles",
+  },
 };
 
 export default function ArticlesPage() {

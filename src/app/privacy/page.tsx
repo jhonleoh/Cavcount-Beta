@@ -6,7 +6,21 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy - CavCount",
-  description: "CavCount's privacy policy and data protection information",
+  description: "CavCount's privacy policy and data protection information. Learn how we safeguard your privacy while using our word counting and OCR tools.",
+  openGraph: {
+    title: "Privacy Policy - CavCount",
+    description: "CavCount's privacy policy and data protection information. Learn how we safeguard your privacy.",
+    type: "website",
+    url: "https://cavcount.app/privacy",
+  },
+  twitter: {
+    card: "summary",
+    title: "Privacy Policy - CavCount",
+    description: "CavCount's privacy policy and data protection information",
+  },
+  alternates: {
+    canonical: "https://cavcount.app/privacy",
+  },
 };
 
 export default function PrivacyPage() {

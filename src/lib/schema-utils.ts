@@ -185,8 +185,39 @@ export function generateHomePageSchema() {
     }
   };
 
-  // Return array of schemas
-  return [websiteSchema, breadcrumbSchema];
+  // Create WebApplication schema - only on the home page
+  const webApplicationSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "CavCount",
+    "url": baseUrl,
+    "description": "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
+    "applicationCategory": "Utility",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript",
+    "featureList": [
+      "Word counting",
+      "Sentence counting",
+      "Character counting",
+      "OCR text extraction",
+      "Reading time calculation",
+      "Paragraph counting"
+    ],
+    "screenshot": `${baseUrl}/screenshot.png`,
+    "creator": {
+      "@type": "Organization",
+      "name": "Cavcount",
+      "sameAs": "https://www.facebook.com/cavcount"
+    }
+  };
+
+  // Return array of schemas - now including WebApplication schema only on the home page
+  return [websiteSchema, webApplicationSchema, breadcrumbSchema];
 }
 
 /**

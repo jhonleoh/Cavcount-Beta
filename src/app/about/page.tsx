@@ -2,10 +2,25 @@ import { Card } from "@/components/ui/card"
 import { TeamMember } from "@/components/team-member"
 import { generateAboutPageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "About Us - CavCount",
-  description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo."
+  description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
+  openGraph: {
+    title: "About Us - CavCount",
+    description: "Learn about CavCount's mission, origins, and the team behind the free word counting and OCR tools",
+    type: "website",
+    url: "https://cavcount.app/about",
+  },
+  twitter: {
+    card: "summary",
+    title: "About Us - CavCount",
+    description: "Learn about CavCount's mission, origins, and the team behind the free word counting and OCR tools",
+  },
+  alternates: {
+    canonical: "https://cavcount.app/about",
+  },
 }
 
 export default function AboutPage() {

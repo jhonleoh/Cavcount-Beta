@@ -104,71 +104,12 @@ export default function RootLayout({
     >
       <head>
         <script src="/tesseract-config.js" defer />
-        <meta
-          name="description"
-          content="Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly."
-        />
+        {/* CSP header for security */}
         <meta
           httpEquiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline';"
         />
-        {/* Structured Data for Google Search */}
-        <Script id="structured-data" type="application/ld+json">
-          {`
-            {
-              "@context": "https://schema.org",
-              "@type": "WebApplication",
-              "name": "CavCount",
-              "url": "https://cavcount.app",
-              "description": "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
-              "applicationCategory": "Utility",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-              },
-              "operatingSystem": "Any",
-              "browserRequirements": "Requires JavaScript",
-              "featureList": [
-                "Word counting",
-                "Sentence counting",
-                "Character counting",
-                "OCR text extraction",
-                "Reading time calculation",
-                "Paragraph counting"
-              ],
-              "screenshot": "https://cavcount.app/screenshot.png",
-              "creator": {
-                "@type": "Organization",
-                "name": "Cavcount",
-                "sameAs": "https://www.facebook.com/cavcount"
-              }
-            }
-          `}
-        </Script>
-        {/* Main navigation breadcrumb schema */}
-        <Script id="breadcrumb-schema" type="application/ld+json">
-          {`
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Home",
-                  "item": "https://cavcount.app"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Articles",
-                  "item": "https://cavcount.app/articles"
-                }
-              ]
-            }
-          `}
-        </Script>
+        {/* WebApplication schema and global breadcrumb removed to fix SEO issues */}
       </head>
       <body className="antialiased">
         <AppClientLayout>{children}</AppClientLayout>
