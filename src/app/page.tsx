@@ -1,7 +1,7 @@
 import { WordCounter } from "@/components/word-counter";
 import { generateHomePageSchema } from "@/lib/schema-utils";
 import Script from "next/script";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
