@@ -6,26 +6,19 @@
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   NODE_VERSION = "18"
   NEXT_TELEMETRY_DISABLED = "1"
-  NEXT_SKIP_LINT = "true"
-  NEXT_TYPESCRIPT_CHECK = "false"
-  NEXT_DISABLE_TYPESCRIPT_CHECK = "true"
-  NEXT_IGNORE_TYPESCRIPT_ERRORS = "true"
   NODE_OPTIONS = "--max-old-space-size=4096"
-  SKIP_ESLINT_CHECK = "true"
-  SKIP_TYPE_CHECK = "true"
 
-# Configure proper HTTP headers for SEO
+# Global headers
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline'; font-src 'self' data:;"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-XSS-Protection = "1; mode=block"
-    Cache-Control = "public, max-age=3600"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline'; font-src 'self' data:;"
 
-# Special headers for SEO-critical files
+# SEO-critical files
 [[headers]]
   for = "/sitemap.xml"
   [headers.values]
@@ -35,21 +28,3 @@
   for = "/robots.txt"
   [headers.values]
     Cache-Control = "public, max-age=0"
-
-# Headers for JSON-LD files to improve structured data delivery
-[[headers]]
-  for = "/*.json"
-  [headers.values]
-    Content-Type = "application/json"
-    Cache-Control = "public, max-age=3600"
-    Access-Control-Allow-Origin = "*"
-
-[images]
-  remote_images = [
-    "https://github.com/**",
-    "https://ext.same-assets.com/**",
-    "https://ugc.same-assets.com/**",
-    "https://cdn.jsdelivr.net/**",
-    "https://unpkg.com/**",
-    "https://tessdata.projectnaptha.com/**"
-  ]
