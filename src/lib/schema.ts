@@ -122,7 +122,7 @@ export function generateAboutPageSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    name: "About CavCount",
+    name: "About Us",
     description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
     url: "https://cavcount.app/about",
     isPartOf: {
@@ -143,7 +143,7 @@ export function generateAboutPageSchema() {
         {
           "@type": "ListItem",
           position: 2,
-          name: "About CavCount",
+          name: "About Us",
           item: "https://cavcount.app/about"
         }
       ]
@@ -158,7 +158,7 @@ export function generateContactPageSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "ContactPage",
-    name: "Contact CavCount",
+    name: "Contact Us",
     description: "Contact CavCount. Get in touch with us for questions, support, or feedback about our free OCR word and sentence counter.",
     url: "https://cavcount.app/contact",
     isPartOf: {
@@ -179,8 +179,44 @@ export function generateContactPageSchema() {
         {
           "@type": "ListItem",
           position: 2,
-          name: "Contact CavCount",
+          name: "Contact Us",
           item: "https://cavcount.app/contact"
+        }
+      ]
+    }
+  };
+}
+
+/**
+ * Generate PrivacyPage schema specifically for the privacy policy page
+ */
+export function generatePrivacyPageSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",  // Using WebPage with specialization through name/content
+    name: "Privacy Policy",
+    description: "CavCount's privacy policy and data protection information. Learn how we safeguard your privacy while using our word counting and OCR tools.",
+    url: "https://cavcount.app/privacy",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "CavCount",
+      url: "https://cavcount.app",
+    },
+    // Include breadcrumb for better representation in search results
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://cavcount.app"
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Privacy Policy",
+          item: "https://cavcount.app/privacy"
         }
       ]
     }
@@ -203,6 +239,8 @@ export function getSchemaByPathname(data: SchemaOrgData): object[] {
     schemas.push(generateAboutPageSchema());
   } else if (data.pathname === "/contact") {
     schemas.push(generateContactPageSchema());
+  } else if (data.pathname === "/privacy") {
+    schemas.push(generatePrivacyPageSchema());
   } else {
     schemas.push(generateWebPageSchema(data));
   }
