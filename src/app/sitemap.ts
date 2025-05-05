@@ -4,7 +4,7 @@ import { MetadataRoute } from 'next';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "cavcount.app";
+  const baseUrl = "https://cavcount.app";
 
   const routes = [
     {

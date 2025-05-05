@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'cavcount.app/sitemap.xml',
+    sitemap: 'https://cavcount.app/sitemap.xml',
   };
 }
