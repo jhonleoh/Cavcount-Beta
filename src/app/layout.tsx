@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SchemaOrg } from "@/components/schema-org";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -67,37 +68,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // JSON-LD schema.org structured data
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    name: "CavCount",
-    headline: "CavCount - OCR Word & Sentence Counter",
-    description:
-      "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool.",
-    url: "https://cavcount.app",
-    applicationCategory: "Utility",
-    operatingSystem: "Any",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-    },
-    author: {
-      "@type": "Person",
-      name: "Leo",
-    },
-  };
+  // Extract title and description from metadata
+  const title = metadata.title?.default?.toString() || "CavCount";
+  const description = metadata.description?.toString() || "";
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="canonical" href="https://cavcount.app" />
-        {/* Schema.org structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <SchemaOrg title={title} description={description} />
       </head>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
