@@ -1,0 +1,6 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="128" fill="#040a13"/>
+  <path d="M128 192C128 156.654 156.654 128 192 128H320C355.346 128 384 156.654 384 192V320C384 355.346 355.346 384 320 384H192C156.654 384 128 355.346 128 320V192Z" fill="#6b2bd8" fill-opacity="0.5"/>
+  <text x="256" y="270" font-family="Arial, sans-serif" font-size="130" font-weight="bold" text-anchor="middle" fill="white">CC</text>
+  <text x="256" y="330" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="white">CavCount</text>
+</svg>

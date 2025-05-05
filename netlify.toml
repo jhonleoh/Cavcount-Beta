@@ -1,30 +1,25 @@
+[images]
+  remote_images = ["https://source.unsplash.com/.*", "https://images.unsplash.com/.*", "https://ext.same-assets.com/.*", "https://ugc.same-assets.com/.*"]
+
 [build]
-  command = "bun install --legacy-peer-deps && chmod +x build-enhanced.sh && ./build-enhanced.sh"
+  command = "npm run build"
   publish = "out"
 
-[build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
-  NODE_VERSION = "18"
-  NEXT_TELEMETRY_DISABLED = "1"
-  NODE_OPTIONS = "--max-old-space-size=4096"
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
-# Global headers
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    X-XSS-Protection = "1; mode=block"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*; connect-src 'self' https://* blob:; worker-src 'self' blob: https://*; img-src 'self' data: blob: https://*; style-src 'self' 'unsafe-inline'; font-src 'self' data:;"
 
-# SEO-critical files
-[[headers]]
-  for = "/sitemap.xml"
-  [headers.values]
-    Cache-Control = "public, max-age=0"
+[build.environment]
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
-[[headers]]
-  for = "/robots.txt"
-  [headers.values]
-    Cache-Control = "public, max-age=0"
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

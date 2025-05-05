@@ -1,15 +1,16 @@
-import type { MetadataRoute } from 'next';
+import { MetadataRoute } from 'next';
 
-export const dynamic = "force-static";
+// Force static rendering for export
+export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://cavcount.app';
+  const baseUrl = "https://cavcount.app";
 
-  return [
+  const routes = [
     {
-      url: baseUrl,
+      url: `${baseUrl}`,
       lastModified: new Date(),
-      changeFrequency: 'daily',
+      changeFrequency: 'weekly',
       priority: 1,
     },
     {
@@ -22,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.7,
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/privacy`,
@@ -30,5 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.5,
     },
-  ];
+  ] as const;
+
+  return routes;
 }
