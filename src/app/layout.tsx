@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 // Define site metadata with SEO best practices
 export const metadata: Metadata = {
-  metadataBase: new URL("https://same-9rnw9ubewk3-latest.netlify.app"),
+  metadataBase: new URL("cavcount.app"),
   title: {
     template: "%s | CavCount",
     default: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   ],
   creator: "Leo",
   publisher: "CavCount",
-  authors: [{ name: "Leo", url: "https://same-9rnw9ubewk3-latest.netlify.app/about" }],
+  authors: [{ name: "Leo", url: "cavcount.app/about" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://same-9rnw9ubewk3-latest.netlify.app",
+    url: "cavcount.app",
     title: "CavCount - Free Word Counter & OCR Tool",
     description:
       "Free online tool to count words, sentences, characters and extract text from images with OCR. No ads, no sign-up required.",
@@ -75,7 +75,7 @@ export default function RootLayout({
     headline: "CavCount - OCR Word & Sentence Counter",
     description:
       "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool.",
-    url: "https://same-9rnw9ubewk3-latest.netlify.app",
+    url: "cavcount.app",
     applicationCategory: "Utility",
     operatingSystem: "Any",
     offers: {
@@ -92,7 +92,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="canonical" href="https://same-9rnw9ubewk3-latest.netlify.app" />
+        <link rel="canonical" href="cavcount.app" />
         {/* Schema.org structured data */}
         <script
           type="application/ld+json"
