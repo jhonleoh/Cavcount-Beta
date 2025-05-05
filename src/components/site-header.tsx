@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { Menu } from "lucide-react";
+import { useState } from "react";
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const routes = [
     { href: "/about", label: "About" },
@@ -17,12 +19,22 @@ export function SiteHeader() {
     { href: "/privacy", label: "Privacy" },
   ];
 
+  const handleLinkClick = () => {
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  };
+
   return (
     <header className="border-b bg-background">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="logo-container">
           <div className="logo-wrap">
-            <Link className="hover-target relative flex items-center text-xl font-extrabold" href="/">
+            <Link
+              className="hover-target relative flex items-center text-xl font-extrabold"
+              href="/"
+              onClick={handleLinkClick}
+            >
               <span
                 className="relative flex"
                 style={{
@@ -61,15 +73,29 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <Sheet>
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="p-2 hover:text-primary md:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="p-2 hover:text-primary md:hidden"
+              >
                 <Menu />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
               <div className="flex flex-col space-y-4 mt-8">
+                <Link
+                  href="/"
+                  className={cn(
+                    "hover:text-primary block py-2 font-bold",
+                    pathname === "/" ? "text-primary" : ""
+                  )}
+                  onClick={handleLinkClick}
+                >
+                  Home
+                </Link>
                 {routes.map((route) => (
                   <Link
                     key={route.href}
@@ -78,6 +104,7 @@ export function SiteHeader() {
                       "hover:text-primary block py-2",
                       pathname === route.href ? "text-primary" : ""
                     )}
+                    onClick={handleLinkClick}
                   >
                     {route.label}
                   </Link>

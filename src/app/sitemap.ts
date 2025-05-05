@@ -4,7 +4,7 @@ import { MetadataRoute } from 'next';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://cavcount.app";
+  const baseUrl = "https://same-9rnw9ubewk3-latest.netlify.app";
 
   const routes = [
     {
