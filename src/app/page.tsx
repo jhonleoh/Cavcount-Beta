@@ -14,6 +14,9 @@ interface TextStats {
   paragraphs: number;
 }
 
+// Control variable for the announcement visibility
+const ANNOUNCEMENT_ENABLED = false; // Set to false to disable the announcement entirely
+
 export default function Home() {
   const [text, setText] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -24,7 +27,7 @@ export default function Home() {
     readingTime: 0,
     paragraphs: 0,
   });
-  const [showAnnouncement, setShowAnnouncement] = useState(true);
+  const [showAnnouncement, setShowAnnouncement] = useState(ANNOUNCEMENT_ENABLED);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,7 +57,7 @@ export default function Home() {
 
   // useEffect for auto-closing the announcement
   useEffect(() => {
-    if (showAnnouncement) {
+    if (showAnnouncement && ANNOUNCEMENT_ENABLED) { // Also check ANNOUNCEMENT_ENABLED here
       const timer = setTimeout(() => {
         setShowAnnouncement(false);
       }, 10000); // 10 seconds
