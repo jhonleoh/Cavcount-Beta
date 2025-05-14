@@ -52,6 +52,19 @@ export default function Home() {
     });
   }, [text]);
 
+  // useEffect for auto-closing the announcement
+  useEffect(() => {
+    if (showAnnouncement) {
+      const timer = setTimeout(() => {
+        setShowAnnouncement(false);
+      }, 10000); // 10 seconds
+
+      // Cleanup function to clear the timer if the component unmounts
+      // or if the announcement is closed manually before the timer finishes.
+      return () => clearTimeout(timer);
+    }
+  }, [showAnnouncement]); // Re-run if showAnnouncement changes (e.g., manually closed)
+
   const handleUploadClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
