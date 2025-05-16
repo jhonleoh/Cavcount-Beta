@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // For Cloudflare Pages, we need to output static files
-  output: 'export',
-  distDir: 'out',
+  // Server-side rendering configuration
   images: {
-    unoptimized: true,
+    domains: ['source.unsplash.com', 'images.unsplash.com', 'ext.same-assets.com', 'ugc.same-assets.com'],
   },
   webpack: (config) => {
     config.resolve.fallback = {

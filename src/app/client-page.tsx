@@ -4,10 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { X, Upload, Copy, Trash2 } from "lucide-react";
-import dynamic from "next/dynamic";
-
-// Dynamically import Tesseract.js with no SSR to avoid issues with static export
-const Tesseract = dynamic(() => import("tesseract.js"), { ssr: false });
+import * as Tesseract from "tesseract.js";
 
 interface TextStats {
   words: number;
@@ -84,15 +81,11 @@ export default function ClientPage() {
     try {
       setIsProcessing(true);
 
-      if (!Tesseract || typeof Tesseract.recognize !== 'function') {
-        throw new Error("Tesseract.js failed to load");
-      }
-
       const result = await Tesseract.recognize(
         file,
         'eng',
         {
-          logger: (m: any) => {
+          logger: (m) => {
             console.log(m);
           }
         }

@@ -6,8 +6,7 @@
     "dev": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "cloudflare:build": "next build && cp public/_routes.json out/_routes.json"
+    "lint": "next lint"
   },
   "dependencies": {
     "@biomejs/biome": "1.9.4",
