@@ -4,7 +4,6 @@
   "exclude": [
     "/_next/*",
     "/api/*",
-    "/_next/static/*",
     "/favicon.svg",
     "/robots.txt",
     "/sitemap.xml",
