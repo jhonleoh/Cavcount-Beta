@@ -68,7 +68,7 @@ export default function RootLayout({
   // For root layout, just use the homepage pathname
   const pathname = "/";
 
-  // Use hardcoded title and description for the schema
+  // Extract title and description from metadata - use simple strings instead of complex objects
   const title = "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool";
   const description = "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.";
 
