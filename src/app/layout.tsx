@@ -11,10 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 // Define site metadata with SEO best practices
 export const metadata: Metadata = {
   metadataBase: new URL("https://cavcount.app"),
-  title: {
-    template: "%s | CavCount",
-    default: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
-  },
+  title: "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool",
   description:
     "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.",
   keywords: [
@@ -68,15 +65,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Extract title and description from metadata
-  const title = metadata.title?.default?.toString() || "CavCount";
-  const description = metadata.description?.toString() || "";
+  // For root layout, just use the homepage pathname
+  const pathname = "/";
+
+  // Use hardcoded title and description for the schema
+  const title = "CavCount - OCR Word & Sentence Counter | Free Image to Text Tool";
+  const description = "Count words, sentences, characters, and paragraphs. Upload images to extract text with our free OCR tool. Analyze text and get reading time estimates instantly.";
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="canonical" href="https://cavcount.app" />
-        <SchemaOrg title={title} description={description} />
+        <SchemaOrg title={title} description={description} pathname={pathname} />
       </head>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>

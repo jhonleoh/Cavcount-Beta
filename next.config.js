@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  distDir: 'out',
+  // Remove static export options to enable server-side rendering
   images: {
-    unoptimized: true,
+    domains: ['source.unsplash.com', 'images.unsplash.com', 'ext.same-assets.com', 'ugc.same-assets.com'],
   },
   webpack: (config) => {
     config.resolve.fallback = {

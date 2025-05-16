@@ -1,25 +1,15 @@
-"use client";
-
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { getSchemaByPathname } from "@/lib/schema";
 
 export function SchemaOrg({
   title,
-  description
+  description,
+  pathname
 }: {
   title?: string;
   description?: string;
+  pathname: string;
 }) {
-  const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
+  // Generate schemas based on the provided pathname
   const schemas = getSchemaByPathname({
     pathname,
     title,

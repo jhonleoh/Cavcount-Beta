@@ -3,10 +3,17 @@ import { MetadataRoute } from 'next';
 // Force static rendering for export
 export const dynamic = 'force-static';
 
+type ChangeFrequency = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://cavcount.app";
 
-  const routes = [
+  const routes: Array<{
+    url: string;
+    lastModified: Date;
+    changeFrequency: ChangeFrequency;
+    priority: number;
+  }> = [
     {
       url: `${baseUrl}`,
       lastModified: new Date(),
@@ -31,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.5,
     },
-  ] as const;
+  ];
 
   return routes;
 }

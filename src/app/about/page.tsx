@@ -4,6 +4,18 @@ import { Card } from "@/components/ui/card";
 export const metadata: Metadata = {
   title: "About Us",
   description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
+  openGraph: {
+    title: "About Us | CavCount",
+    description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
+    url: "https://cavcount.app/about",
+  },
+  twitter: {
+    title: "About Us | CavCount",
+    description: "Learn about CavCount, a free OCR word and sentence counter, its origins as a student project, and its developer, Leo.",
+  },
+  alternates: {
+    canonical: "https://cavcount.app/about",
+  }
 };
 
 export default function AboutPage() {
